@@ -1,5 +1,5 @@
 <template>
-    <div class="login-container">
+    <div class="login-container" :style="{height: scrollerHeight}">
         <el-card class="box-card" shadow="always">
             <H1>成绩管理系统</H1>
             <el-form  class="Form">
@@ -24,11 +24,20 @@
                 form: {
                     username: "",
                     password: "",
-                }
+                },
+                curHeight:0,
             };
+        },
+        computed: {
+            // 滚动区高度
+            // (业务需求：手机屏幕高度减去头部标题和底部tabbar的高度，当然这2个高度也是可以动态获取的)
+            scrollerHeight: function() {
+                return (window.innerHeight) + 'px';
+            }
         },
         mounted() {
             this.curHeight = document.documentElement.clientHeight || document.body.clientHeight;
+            console.log(this.curHeight)
         },
         methods: {
             onSubmit() {
@@ -63,7 +72,7 @@
 <style scoped>
     .login-container {
         width: 100%;
-        height: 800px;
+        height: 100%;
         margin: 0;
         padding: 0;
         background: #B3C0D1;
