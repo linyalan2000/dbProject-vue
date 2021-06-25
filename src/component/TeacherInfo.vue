@@ -6,7 +6,6 @@
       </el-col>
       <el-col :span="17" style="background: #545c64">
         <el-menu
-
             :default-active="this.$router.path" router
             mode="horizontal"
             @select="handleSelect"

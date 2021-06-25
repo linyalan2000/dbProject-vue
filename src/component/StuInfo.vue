@@ -1,5 +1,4 @@
 <template>
-  <div>
     <el-col>
       <el-row style="background: #545c64">
         <el-col :span="3" style="text-color: #B3C0D1">
@@ -31,10 +30,8 @@
         <!--        <el-progress :percentage="90" status="success"></el-progress>-->
         <el-progress :text-inside="true" :stroke-width="24" :percentage="90" status="success"></el-progress>
       </el-row>
-    </el-col>
 
-    <div >
-      <div style="margin: 20px;">
+
         <el-row class="span-row"></el-row>
         <el-row class="span-row"></el-row>
 
@@ -62,21 +59,15 @@
           <el-form-item label="专业：">
             <el-input v-model="formInline.major" ></el-input>
           </el-form-item>
-          <!--        <el-form-item label="政治面貌：">-->
-          <!--          <el-input v-model="formInline.polity" ></el-input>-->
-          <!--        </el-form-item>-->
-
           <el-form-item label="预计毕业时间：">
             <el-input v-model="formInline.graduateTime" ></el-input>
           </el-form-item>
-
+          <el-form-item label="密码：">
+            <el-input v-model="formInline.pass" ></el-input>
+          </el-form-item>
+          <el-button type="text" @click="open">修改</el-button>
         </el-form>
-      </div>
-
-    </div>
-
-
-  </div>
+    </el-col>
 
 </template>
 
@@ -87,8 +78,8 @@ export default {
   data(){
     return{
       navList:[
-        {name:'/info',navItem:'个人信息'},
-        {name:'/stuinfo',navItem:'成绩管理'}
+        {name:'/stuinfo',navItem:'学生个人信息'},
+        {name:'/stuscore',navItem:'个人成绩查询'}
       ],
       formInline: {
         name: "向文芳",
@@ -99,7 +90,8 @@ export default {
         telephone:"17337784263",
         major:"计算机科学系",
         // polity:"共青团员",
-        graduateTime:"2022-06-30"
+        graduateTime:"2022-06-30",
+        pass:"xwf1234567"
       },
 
     }
@@ -112,6 +104,13 @@ export default {
         console.log(response.data) //在控制台中打印其data部分内容
         var res = response.data;
         this.formInline.name = res.sname;
+        this.formInline.telephone=res.telphone;
+        this.formInline.DateOfCome=res.inyear;
+        this.formInline.id=res.sno;
+        this.formInline.sex=res.sex;
+        this.formInline.major=res.major;
+        this.formInline.graduateTime=res.leaveyear;
+        this.formInline.pass=res.pass;
 
     })
   },
@@ -123,6 +122,32 @@ export default {
     format(percentage) {
       return percentage === 100 ? '满' : `${percentage}%`;
     },
+    open() {
+      var flag;
+      this.$confirm('此操作将更改您的登录密码, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '更改密码成功!',
+          flag:1
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消更改密码',
+          flag:null
+        });
+      });
+      if(flag != null){
+        console("修改后的密码：");
+        console(this.formInline.pass);
+      }
+
+    }
+
   }
 }
 </script>

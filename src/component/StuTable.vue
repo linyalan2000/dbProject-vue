@@ -30,16 +30,16 @@
     <el-row>
       <el-form :inline="true" :model="formInline" class="select-form">
         <el-form-item label="学号：">
-          <el-input v-model="formInline.id" ></el-input>
+          <el-input v-model="formInline.sid" ></el-input>
         </el-form-item>
         <el-form-item label="姓名：">
-          <el-input v-model="formInline.name" ></el-input>
+          <el-input v-model="formInline.sname" ></el-input>
         </el-form-item>
         <el-form-item label="班级：">
-          <el-input v-model="formInline.name" ></el-input>
+          <el-input v-model="formInline.class" ></el-input>
         </el-form-item>
-        <el-form-item label="科目：">
-          <el-input v-model="formInline.name" ></el-input>
+        <el-form-item label="课程号：">
+          <el-input v-model="formInline.cid" ></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -65,6 +65,12 @@
         <el-table-column
             prop="stuname"
             label="姓名"
+            header-align="center"
+            width="120">
+        </el-table-column>
+        <el-table-column
+            prop="courseid"
+            label="课程号"
             header-align="center"
             width="120">
         </el-table-column>
@@ -136,6 +142,7 @@ export default {
       tableData: [{
         stuid: '95002',
         stuname: '王小虎',
+        courseid:'01',
         course: 'C语言程序设计',
         mainTeacher: '陈晨',
         score: '71',
@@ -143,6 +150,7 @@ export default {
       }, {
         stuid: '95008',
         stuname: '张三',
+        courseid:'01',
         course: '数据结构',
         mainTeacher: '庄朝晖',
         score: '94',
@@ -150,6 +158,7 @@ export default {
       }, {
         stuid: '95002',
         stuname: '王小虎',
+        courseid:'01',
         course: 'C语言程序设计',
         mainTeacher: '陈晨',
         score: '71',
@@ -157,6 +166,7 @@ export default {
       }, {
         stuid: '95008',
         stuname: '张三',
+        courseid:'01',
         course: '数据结构',
         mainTeacher: '庄朝晖',
         score: '94',
@@ -164,6 +174,7 @@ export default {
       }, {
         stuid: '95002',
         stuname: '李斯',
+        courseid:'01',
         course: 'C语言程序设计',
         mainTeacher: '陈晨',
         score: '71',
@@ -171,18 +182,21 @@ export default {
       },  {
         stuid: '95002',
         stuname: '张三',
+        courseid:'01',
         course: 'C语言程序设计',
         mainTeacher: '陈晨',
         score: '71',
         Term: '2018-12-01'
       }],
       navList:[
-        {name:'/info',navItem:'个人信息'},
-        {name:'/score',navItem:'成绩管理'}
+        {name:'/teatable',navItem:'教师信息管理'},
+        {name:'/stutable',navItem:'学生成绩管理'}
       ],
       formInline: {
-        id: '',
-        name: ''
+        sid: '',
+        sname:'',
+        class:'',
+        cid:''
       },
       multipleSelection:0
 

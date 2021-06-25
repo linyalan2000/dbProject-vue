@@ -1,15 +1,17 @@
 <template>
-  <div>
     <el-col>
       <el-row style="background: #545c64">
         <el-col :span="3" style="text-color: #B3C0D1">
-          <h3 style="color: #ffffff">学生成绩管理系统</h3>
+          <h3 style="color: #ffffff">教师信息管理系统</h3>
         </el-col>
         <el-col :span="17" style="background: #545c64">
-          <el-menu :default-active="this.$router.path" router mode="horizontal"
-                   background-color="#545c64"
-                   text-color="#fff"
-                   active-text-color="#ffd04b">
+          <el-menu
+              :default-active="this.$router.path" router
+              mode="horizontal"
+              @select="handleSelect"
+              background-color="#545c64"
+              text-color="#fff"
+              active-text-color="#ffd04b">
             <el-menu-item v-for="(item,i) in navList" :key="i" :index="item.name">
               {{ item.navItem }}
             </el-menu-item>
@@ -19,21 +21,21 @@
           <h5 style="color: #ffffff">欢迎您，{{this.Common.userName}}！</h5>
         </el-col>
 
-
         <el-col :span="1">
           <h5 style="color: #ffffff" @click="logout">登出</h5>
         </el-col>
       </el-row>
+
+
+
       <el-row class="span-row"></el-row>
 
-    </el-col>
 
-    <div >
-      <div style="margin: 20px;">
         <el-row class="span-row"></el-row>
-        <el-row class="span-row"></el-row>
+        <el-row class="span-row0"></el-row>
 
-        <el-row>基本信息</el-row>
+        <h3 >基本信息</h3>
+        <el-row class="span-row"></el-row>
         <el-row class="span-row0"></el-row>
         <el-form :inline="true" :model="formInline" class="select-form">
           <el-form-item label="教工号：">
@@ -59,12 +61,7 @@
           </el-form-item>
 
         </el-form>
-      </div>
-
-    </div>
-
-
-  </div>
+    </el-col>
 
 </template>
 
@@ -75,8 +72,8 @@ export default {
   data(){
     return{
       navList:[
-        {name:'/info',navItem:'个人信息'},
-        {name:'/teainfo',navItem:'成绩管理'}
+        {name:'/teainfo',navItem:'教师个人信息'},
+        {name:'/teacourse',navItem:'所授课程信息'}
       ],
       formInline: {
         name: "林子雨",

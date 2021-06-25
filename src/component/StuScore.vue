@@ -30,17 +30,11 @@
     <el-row class="span-row"></el-row>
     <el-row>
       <el-form :inline="true" :model="formInline" class="select-form">
-        <el-form-item label="学号：">
-          <el-input v-model="formInline.id" ></el-input>
+        <el-form-item label="课程号：">
+          <el-input v-model="formInline.cid" ></el-input>
         </el-form-item>
-        <el-form-item label="姓名：">
-          <el-input v-model="formInline.name" ></el-input>
-        </el-form-item>
-        <el-form-item label="班级：">
-          <el-input v-model="formInline.name" ></el-input>
-        </el-form-item>
-        <el-form-item label="科目：">
-          <el-input v-model="formInline.name" ></el-input>
+        <el-form-item label="课程名：">
+          <el-input v-model="formInline.cname" ></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -58,10 +52,17 @@
         </el-table-column>
         <el-table-column
             fixed
+            prop="courseid"
+            label="课程号"
+            header-align="center"
+            width="200">
+        </el-table-column>
+        <el-table-column
+            fixed
             prop="courseName"
             label="课程名称"
             header-align="center"
-            width="500">
+            width="200">
         </el-table-column>
         <el-table-column
             prop="academy"
@@ -96,38 +97,43 @@ export default {
   data(){
     return{
       tableData: [{
+        courseid:'01',
         courseName: 'os',
         academy: '信息学院',
         mainTeacher: '郑炜',
         score: '100'
       }, {
+        courseid:'02',
         courseName: '数据库',
         academy: '信息学院',
         mainTeacher: '林紫雨',
         score: '90'
       }, {
+        courseid:'03',
         courseName: '系统结构',
         academy: '信息学院',
         mainTeacher: '吴素贞',
         score: '80'
       },  {
+        courseid:'04',
         courseName: '编译原理',
         academy: '信息学院',
         mainTeacher: '李慧其',
         score: '90'
       }, {
+        courseid:'05',
         courseName: 'os',
         academy: '信息学院',
         mainTeacher: '郑炜',
         score: '100'
       }],
       navList:[
-        {name:'/info',navItem:'个人信息'},
-        {name:'/score',navItem:'成绩管理'}
+        {name:'/stuinfo',navItem:'学生个人信息'},
+        {name:'/stuscore',navItem:'个人成绩查询'}
       ],
       formInline: {
-        id: '',
-        name: ''
+        cid: '',
+        cname: ''
       },
       multipleSelection:0
 

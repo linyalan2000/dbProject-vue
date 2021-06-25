@@ -159,8 +159,8 @@ export default {
         privilege: 't',
       }],
       navList:[
-        {name:'/info',navItem:'个人信息'},
-        {name:'/score',navItem:'成绩管理'}
+        {name:'/teatable',navItem:'教师信息管理'},
+        {name:'/stutable',navItem:'学生成绩管理'}
       ],
       formInline: {
         id: '',

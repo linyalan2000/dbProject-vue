@@ -2,7 +2,7 @@
   <el-col>
     <el-row style="background: #545c64">
       <el-col :span="3" style="text-color: #B3C0D1">
-        <h3 style="color: #ffffff">学生成绩管理系统</h3>
+        <h3 style="color: #ffffff">教师信息管理系统</h3>
       </el-col>
       <el-col :span="17" style="background: #545c64">
         <el-menu
@@ -27,20 +27,16 @@
       </el-col>
     </el-row>
 
+
+
     <el-row class="span-row"></el-row>
     <el-row>
       <el-form :inline="true" :model="formInline" class="select-form">
-        <el-form-item label="学号：">
-          <el-input v-model="formInline.id" ></el-input>
+        <el-form-item label="课程号：">
+          <el-input v-model="formInline.cid" ></el-input>
         </el-form-item>
-        <el-form-item label="姓名：">
-          <el-input v-model="formInline.name" ></el-input>
-        </el-form-item>
-        <el-form-item label="班级：">
-          <el-input v-model="formInline.name" ></el-input>
-        </el-form-item>
-        <el-form-item label="科目：">
-          <el-input v-model="formInline.name" ></el-input>
+        <el-form-item label="课程名：">
+          <el-input v-model="formInline.cname" ></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -57,11 +53,16 @@
             width="55">
         </el-table-column>
         <el-table-column
-            fixed
+            prop="courseid"
+            label="课程号"
+            header-align="center"
+            width="200">
+        </el-table-column>
+        <el-table-column
             prop="courseName"
             label="课程名称"
             header-align="center"
-            width="500">
+            width="200">
         </el-table-column>
         <el-table-column
             prop="academy"
@@ -76,8 +77,8 @@
             width="220">
         </el-table-column>
         <el-table-column
-            prop="score"
-            label="课程成绩"
+            prop="stunum"
+            label="选修人数"
             header-align="center"
             width="220">
         </el-table-column>
@@ -96,38 +97,43 @@ export default {
   data(){
     return{
       tableData: [{
+        courseid:'01',
         courseName: 'os',
         academy: '信息学院',
-        mainTeacher: '郑炜',
-        score: '100'
+        mainTeacher: '林子雨',
+        stunum: '120'
       }, {
+        courseid:'03',
         courseName: '数据库',
         academy: '信息学院',
-        mainTeacher: '林紫雨',
-        score: '90'
+        mainTeacher: '林子雨',
+        stunum: '50'
       }, {
+        courseid:'10',
         courseName: '系统结构',
         academy: '信息学院',
-        mainTeacher: '吴素贞',
-        score: '80'
+        mainTeacher: '林子雨',
+        stunum: '48'
       },  {
+        courseid:'98',
         courseName: '编译原理',
         academy: '信息学院',
-        mainTeacher: '李慧其',
-        score: '90'
+        mainTeacher: '林子雨',
+        stunum: '98'
       }, {
-        courseName: 'os',
+        courseid:'12',
+        courseName: '计网',
         academy: '信息学院',
-        mainTeacher: '郑炜',
-        score: '100'
+        mainTeacher: '林子雨',
+        stunum: '40'
       }],
       navList:[
-        {name:'/info',navItem:'个人信息'},
-        {name:'/score',navItem:'成绩管理'}
+        {name:'/teainfo',navItem:'教师个人信息'},
+        {name:'/teacourse',navItem:'所授课程信息'}
       ],
       formInline: {
-        id: '',
-        name: ''
+        cid: '',
+        cname: ''
       },
       multipleSelection:0
 
