@@ -60,21 +60,25 @@
             fixed
             prop="courseName"
             label="课程名称"
+            header-align="center"
             width="500">
         </el-table-column>
         <el-table-column
             prop="academy"
             label="开课院系"
+            header-align="center"
             width="220">
         </el-table-column>
         <el-table-column
             prop="mainTeacher"
             label="主讲老师"
+            header-align="center"
             width="220">
         </el-table-column>
         <el-table-column
             prop="score"
             label="课程成绩"
+            header-align="center"
             width="220">
         </el-table-column>
 
@@ -88,7 +92,7 @@
 
 <script>
 export default {
-  name: "Score",
+  name: "TeaCourse",
   data(){
     return{
       tableData: [{

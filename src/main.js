@@ -9,6 +9,14 @@ import Score from "~/component/Score";
 import Info from "~/component/Info";
 import Test from "~/component/Test";
 import Common from "~/component/Common";
+import StuInfo from "~/component/StuInfo";
+import TeacherInfo from "~/component/TeacherInfo";
+import StuTable from "~/component/StuTable";
+import TeaTable from "~/component/TeaTable";
+import StuScore from "~/component/StuScore";
+import TeaInfo from "~/component/TeaInfo";
+import TeaCourse from "~/component/TeaCourse";
+
 Vue.prototype.$axios = axios    //注册为全局变量，使用方法为:this.$axios
 Vue.use(VueRouter)
 Vue.use(ElementUI)
@@ -30,7 +38,35 @@ const routes=[
   {
     path: '/test',
     component: Test
-  }
+  },
+  {
+    path: '/stuinfo',
+    component: StuInfo
+  },
+  {
+    path: '/teacherinfo',
+    component: TeacherInfo
+  },
+  {
+    path: '/stutable',
+    component: StuTable
+  },
+  {
+    path: '/stuscore',
+    component: StuScore
+  },
+  {
+    path: '/teainfo',
+    component: TeaInfo
+  },
+  {
+    path: '/teacourse',
+    component: TeaCourse
+  },
+  {
+    path: '/teatable',
+    component: TeaTable
+  },
 ]
 
     const router = new VueRouter(

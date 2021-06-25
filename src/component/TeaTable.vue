@@ -26,20 +26,13 @@
         <h5 style="color: #ffffff" @click="logout">登出</h5>
       </el-col>
     </el-row>
-
     <el-row class="span-row"></el-row>
     <el-row>
       <el-form :inline="true" :model="formInline" class="select-form">
-        <el-form-item label="学号：">
+        <el-form-item label="教工号：">
           <el-input v-model="formInline.id" ></el-input>
         </el-form-item>
         <el-form-item label="姓名：">
-          <el-input v-model="formInline.name" ></el-input>
-        </el-form-item>
-        <el-form-item label="班级：">
-          <el-input v-model="formInline.name" ></el-input>
-        </el-form-item>
-        <el-form-item label="科目：">
           <el-input v-model="formInline.name" ></el-input>
         </el-form-item>
         <el-form-item>
@@ -58,26 +51,63 @@
         </el-table-column>
         <el-table-column
             fixed
-            prop="courseName"
-            label="课程名称"
-            width="500">
+            prop="tid"
+            label="教工号"
+            header-align="center"
+            width="150">
         </el-table-column>
         <el-table-column
-            prop="academy"
-            label="开课院系"
-            width="220">
+            prop="tname"
+            label="姓名"
+            header-align="center"
+            width="120">
         </el-table-column>
         <el-table-column
-            prop="mainTeacher"
-            label="主讲老师"
-            width="220">
+            prop="title"
+            label="职称"
+            header-align="center"
+            width="120">
         </el-table-column>
         <el-table-column
-            prop="score"
-            label="课程成绩"
-            width="220">
+            prop="pass"
+            label="密码"
+            header-align="center"
+            width="120">
         </el-table-column>
-
+        <el-table-column
+            prop="privilege"
+            label="权限"
+            header-align="center"
+            width="200">
+        </el-table-column>
+        <el-table-column
+            fixed="right"
+            label="操作"
+            header-align="center"
+            width="120">
+          <template slot-scope="scope">
+            <el-button
+                @click.native.prevent="deleteRow(scope.$index, tableData)"
+                type="text"
+                size="small">
+              移除
+            </el-button>
+          </template>
+        </el-table-column>
+        <el-table-column
+            fixed="right"
+            label="操作"
+            header-align="center"
+            width="120">
+          <template slot-scope="scope">
+            <el-button
+                @click.native.prevent="updateRow(scope.$index, tableData)"
+                type="text"
+                size="small">
+              修改
+            </el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </el-row>
     <el-row>
@@ -88,34 +118,45 @@
 
 <script>
 export default {
-  name: "Score",
+  name: "TeaTable",
   data(){
     return{
       tableData: [{
-        courseName: 'os',
-        academy: '信息学院',
-        mainTeacher: '郑炜',
-        score: '100'
+        tid: '10001',
+        tname: '庄朝晖',
+        title: '副教授',
+        pass: 'zzh10001',
+        privilege: 't',
       }, {
-        courseName: '数据库',
-        academy: '信息学院',
-        mainTeacher: '林紫雨',
-        score: '90'
+        tid: '10006',
+        tname: '严严',
+        title: '教授',
+        pass: 'yy10006',
+        privilege: 't',
       }, {
-        courseName: '系统结构',
-        academy: '信息学院',
-        mainTeacher: '吴素贞',
-        score: '80'
+        tid: '10008',
+        tname: '高淳县',
+        title: '助理教授',
+        pass: 'gcx10008',
+        privilege: 't',
+      }, {
+        tid: '10020',
+        tname: '林紫雨',
+        title: '副教授',
+        pass: 'lzy10020',
+        privilege: 't',
+      }, {
+        tid: '10033',
+        tname: '吴素贞',
+        title: '副教授',
+        pass: 'wsz10033',
+        privilege: 't',
       },  {
-        courseName: '编译原理',
-        academy: '信息学院',
-        mainTeacher: '李慧其',
-        score: '90'
-      }, {
-        courseName: 'os',
-        academy: '信息学院',
-        mainTeacher: '郑炜',
-        score: '100'
+        tid: '10088',
+        tname: '林文水',
+        title: '教授',
+        pass: 'lws10088',
+        privilege: 't',
       }],
       navList:[
         {name:'/info',navItem:'个人信息'},
@@ -139,6 +180,25 @@ export default {
     },
     deleteRow(index, rows) {
       rows.splice(index, 1);
+    },
+    updateRow(index, rows) {
+      console.log(this.form.username);
+      console.log("submit!");
+      console.log(this.radio);
+      this.$axios({
+        method:'post',
+        url:'http://150.158.171.212:8080/checklogin',
+        data:{	//按照对象的格式去组织data，key-value形式
+          "stu":this.form.username,
+          "pass":this.form.password,
+          "permissionId":this.radio,
+        }
+      }).then(response => { //这里的response是通过get方法请求得到的内容
+        //在这里添加对于数据的操作
+        console.log(11111111)
+        //经常性的操作如下
+        console.log(response.data) //在控制台中打印其data部分内容
+      })
     },
     onSubmit(){},
     toggleSelection(rows) {
