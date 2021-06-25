@@ -68,12 +68,29 @@
                       "permissionId":this.radio,
                     }
                 }).then(response => { //这里的response是通过get方法请求得到的内容
-                    //在这里添加对于数据的操作
-                    console.log(11111111)
-                    //经常性的操作如下
                     console.log(response.data) //在控制台中打印其data部分内容
+                    var res = response.data
+                    if (res.name != null){
+                        this.$router.push("/stuinfo");
+                        this.Common.userName = res.name;
+                        this.Common.userId = this.form.username;
+                        this.Common.privilege = res.privilege;
+                        console.log(this.Common.privilege)
+                    }
+                    else{
+                        this.$alert('登录失败', {
+                            confirmButtonText: '确定',
+                            callback: action => {
+                                this.$message({
+                                    type: 'info',
+                                    message: `action: ${action}`
+                                });
+                            }
+                        })
+                    }
+
                 })
-                // this.$router.push("/info")
+
             }
 
         }

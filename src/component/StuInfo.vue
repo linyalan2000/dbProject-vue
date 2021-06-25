@@ -104,6 +104,17 @@ export default {
 
     }
   },
+  mounted() {
+    this.$axios({
+      method:'get',
+      url:'http://150.158.171.212:8080/stuinfo?id=' + this.Common.userId
+    }).then(response => { //这里的response是通过get方法请求得到的内容
+        console.log(response.data) //在控制台中打印其data部分内容
+        var res = response.data;
+        this.formInline.name = res.sname;
+
+    })
+  },
   methods: {
     logout(){
       console.log("logout!");

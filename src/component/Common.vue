@@ -4,7 +4,9 @@
 
 <script>
     export default {
-        userName:"王小明",
+        userName:"",
+        userId:"",
+        privilege:"",
         name: "Common",
         data(){
             return {
