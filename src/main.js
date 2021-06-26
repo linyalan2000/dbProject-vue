@@ -16,6 +16,9 @@ import TeaTable from "~/component/TeaTable";
 import StuScore from "~/component/StuScore";
 import TeaInfo from "~/component/TeaInfo";
 import TeaCourse from "~/component/TeaCourse";
+import Course from "~/component/Course";
+import Admin from "~/component/Admin";
+import TeaAddScore from "~/component/TeaAddScore";
 
 Vue.prototype.$axios = axios    //注册为全局变量，使用方法为:this.$axios
 Vue.use(VueRouter)
@@ -66,6 +69,18 @@ const routes=[
   {
     path: '/teatable',
     component: TeaTable
+  },
+  {
+    path: '/course',
+    component: Course
+  },
+  {
+    path: '/admin',
+    component: Admin
+  },
+  {
+    path: '/teaaddscore',
+    component: TeaAddScore
   },
 ]
 

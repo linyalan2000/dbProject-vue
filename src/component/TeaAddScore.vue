@@ -32,17 +32,17 @@
     <el-row class="span-row"></el-row>
     <el-row>
       <el-form :inline="true" :model="formInline" class="select-form">
-        <el-form-item label="课程号：">
-          <el-input v-model="formInline.cid" ></el-input>
+        <el-form-item label="学号：">
+          <el-input v-model="formInline.sid" ></el-input>
         </el-form-item>
-        <el-form-item label="课程名：">
-          <el-input v-model="formInline.cname" ></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询</el-button>
+        <el-form-item label="成绩：">
+          <el-input v-model="formInline.score" ></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="addScore">录入学生成绩</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">查询</el-button>
         </el-form-item>
       </el-form>
       <el-row class="span-row"></el-row>
@@ -59,7 +59,7 @@
             prop="courseid"
             label="课程号"
             header-align="center"
-            width="200">
+            width="80">
         </el-table-column>
         <el-table-column
             prop="courseName"
@@ -68,22 +68,36 @@
             width="200">
         </el-table-column>
         <el-table-column
-            prop="academy"
-            label="开课院系"
+            prop="sid"
+            label="学号"
             header-align="center"
-            width="220">
+            width="200">
         </el-table-column>
         <el-table-column
-            prop="mainTeacher"
-            label="主讲老师"
+            prop="sname"
+            label="学生姓名"
             header-align="center"
-            width="220">
+            width="150">
         </el-table-column>
         <el-table-column
-            prop="stunum"
-            label="学生人数"
+            prop="score"
+            label="成绩"
             header-align="center"
-            width="220">
+            width="100">
+        </el-table-column>
+        <el-table-column
+            fixed="right"
+            label="操作"
+            header-align="center"
+            width="120">
+          <template slot-scope="scope">
+            <el-button
+                @click.native.prevent="updateRow(scope.$index, tableData)"
+                type="text"
+                size="small">
+              修改
+            </el-button>
+          </template>
         </el-table-column>
 
       </el-table>
@@ -96,39 +110,39 @@
 
 <script>
 export default {
-  name: "TeaCourse",
+  name: "TeaAddScore",
   data(){
     return{
       tableData: [{
         courseid:'01',
         courseName: 'os',
-        academy: '信息学院',
-        mainTeacher: '林子雨',
-        stunum: '120'
+        sid: '95002',
+        sname: '林子雨',
+        score: '99'
       }, {
-        courseid:'03',
-        courseName: '数据库',
-        academy: '信息学院',
-        mainTeacher: '林子雨',
-        stunum: '50'
+        courseid:'01',
+        courseName: 'os',
+        sid: '95002',
+        sname: '赵晨',
+        score: '60'
       }, {
-        courseid:'10',
-        courseName: '系统结构',
-        academy: '信息学院',
-        mainTeacher: '林子雨',
-        stunum: '48'
+        courseid:'01',
+        courseName: 'os',
+        sid: '95002',
+        sname: '王五',
+        score: '88'
       },  {
-        courseid:'98',
-        courseName: '编译原理',
-        academy: '信息学院',
-        mainTeacher: '林子雨',
-        stunum: '98'
+        courseid:'01',
+        courseName: 'os',
+        sid: '95002',
+        sname: '李四',
+        score: '72'
       }, {
-        courseid:'12',
-        courseName: '计网',
-        academy: '信息学院',
-        mainTeacher: '林子雨',
-        stunum: '40'
+        courseid:'01',
+        courseName: 'os',
+        sid: '95002',
+        sname: '张三',
+        score: '94'
       }],
       navList:[
         {name:'/teainfo',navItem:'教师个人信息'},
@@ -142,38 +156,6 @@ export default {
 
     }
   },
-  mounted() {
-    console("教师号：");
-    console(this.Common.userId);
-    console("接下来输出此教师的相关课程有哪些：");
-    this.$axios({
-      method:'post',
-      url:'http://150.158.171.212:8080/courseinfo?id=90003',
-      data:{	//按照对象的格式去组织data，key-value形式
-        "tid":this.Common.userId,
-      }
-    }).then(response => { //这里的response是通过get方法请求得到的内容
-      console.log(response.data) //在控制台中打印其data部分内容
-      var res = response.data;//课程号，课程名称，开课院系，已选人数
-      if (res.name != null){
-        this.Common.cid = res.cid;
-        this.Common.cname = res.cname;
-        this.Common.academy = res.academy;
-        this.Common.stunum = res.stunum;
-      }
-      else{
-        this.$alert('搜索课程信息失败', {
-          confirmButtonText: '确定',
-          callback: action => {
-            this.$message({
-              type: 'info',
-              message: `action: ${action}`
-            });
-          }
-        })
-      }
-    })
-  },
   methods: {
     logout(){
       console.log("logout!");
@@ -182,12 +164,11 @@ export default {
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
     },
-    deleteRow(index, rows) {
-      rows.splice(index, 1);
+    updateRow(){
+
     },
     onSubmit(){},
     addScore(){
-      this.$router.push("/teaaddscore");
     },
     toggleSelection(rows) {
       if (rows) {

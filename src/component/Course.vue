@@ -2,7 +2,7 @@
   <el-col>
     <el-row style="background: #545c64">
       <el-col :span="3" style="text-color: #B3C0D1">
-        <h3 style="color: #ffffff">学生成绩管理系统</h3>
+        <h3 style="color: #ffffff">教师信息管理系统</h3>
       </el-col>
       <el-col :span="17" style="background: #545c64">
         <el-menu
@@ -26,32 +26,39 @@
         <h5 style="color: #ffffff" @click="logout">登出</h5>
       </el-col>
     </el-row>
+
+
+
     <el-row class="span-row"></el-row>
     <el-row>
       <el-form :inline="true" :model="formInline" class="select-form">
-        <el-form-item label="教工号：">
-          <el-input v-model="formInline.id" ></el-input>
+        <el-form-item label="课程号：">
+          <el-input v-model="formInline.cid" ></el-input>
         </el-form-item>
-        <el-form-item label="姓名：">
-          <el-input v-model="formInline.name" ></el-input>
+        <el-form-item label="课程名程：">
+          <el-input v-model="formInline.cname" ></el-input>
         </el-form-item>
-        <el-form-item label="职称：">
-          <el-input v-model="formInline.title" ></el-input>
+        <el-form-item label="开课院系：">
+          <el-input v-model="formInline.academy" ></el-input>
         </el-form-item>
-        <el-form-item label="入职时间：">
-          <el-input v-model="formInline.hireDate" ></el-input>
+        <el-form-item label="主讲老师：">
+          <el-input v-model="formInline.teacher" ></el-input>
         </el-form-item>
-        <el-form-item label="权限：">
-          <el-input v-model="formInline.root" ></el-input>
+        <el-form-item label="最多选修人数：">
+          <el-input v-model="formInline.Maxnum" ></el-input>
+        </el-form-item>
+        <el-form-item label="学期时间：">
+          <el-input v-model="formInline.DateOfTerm" ></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">查询</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="addTeacher">添加教师信息</el-button>
+          <el-button type="primary" @click="addCourse">添加课程信息</el-button>
         </el-form-item>
       </el-form>
       <el-row class="span-row"></el-row>
+
       <el-table
           :data="tableData"
           style="width: 100%"
@@ -62,36 +69,42 @@
             width="55">
         </el-table-column>
         <el-table-column
-            fixed
-            prop="tid"
-            label="教工号"
+            prop="courseid"
+            label="课程号"
+            header-align="center"
+            width="100">
+        </el-table-column>
+        <el-table-column
+            prop="courseName"
+            label="课程名称"
             header-align="center"
             width="150">
         </el-table-column>
         <el-table-column
-            prop="tname"
-            label="姓名"
+            prop="academy"
+            label="开课院系"
+            header-align="center"
+            width="150">
+        </el-table-column>
+        <el-table-column
+            prop="mainTeacher"
+            label="主讲老师"
+            header-align="center"
+            width="150">
+        </el-table-column>
+        <el-table-column
+            prop="stunum"
+            label="最多选修人数"
             header-align="center"
             width="120">
         </el-table-column>
         <el-table-column
-            prop="title"
-            label="职称"
-            header-align="center"
-            width="120">
-        </el-table-column>
-        <el-table-column
-            prop="hireDate"
-            label="入职时间"
-            header-align="center"
-            width="120">
-        </el-table-column>
-        <el-table-column
-            prop="privilege"
-            label="权限"
+            prop="term"
+            label="学期时间"
             header-align="center"
             width="200">
         </el-table-column>
+
         <el-table-column
             fixed="right"
             label="操作"
@@ -120,6 +133,7 @@
             </el-button>
           </template>
         </el-table-column>
+
       </el-table>
     </el-row>
     <el-row>
@@ -130,58 +144,56 @@
 
 <script>
 export default {
-  name: "TeaTable",
+  name: "Course",
   data(){
     return{
       tableData: [{
-        tid: '10001',
-        tname: '庄朝晖',
-        title: '副教授',
-        hireDate:"2010-09",
-        privilege: 't',
+        courseid:'01',
+        courseName: '操作系统',
+        academy: '信息学院',
+        mainTeacher: '郑伟',
+        stunum: '120',
+        term:'2018-09'
       }, {
-        tid: '10006',
-        tname: '严严',
-        title: '教授',
-        hireDate:"2010-09",
-        privilege: 't',
+        courseid:'03',
+        courseName: '计算机网络',
+        academy: '信息学院',
+        mainTeacher: '林子雨',
+        stunum: '50',
+        term:'2018-09'
       }, {
-        tid: '10008',
-        tname: '高淳县',
-        title: '助理教授',
-        hireDate:"2010-09",
-        privilege: 't',
-      }, {
-        tid: '10020',
-        tname: '林紫雨',
-        title: '副教授',
-        hireDate:"2010-09",
-        privilege: 't',
-      }, {
-        tid: '10033',
-        tname: '吴素贞',
-        title: '副教授',
-        hireDate:"2010-09",
-        privilege: 't',
+        courseid:'10',
+        courseName: '电子电力技术',
+        academy: '信息学院',
+        mainTeacher: '严为民',
+        stunum: '48',
+        term:'2018-09'
       },  {
-        tid: '10088',
-        tname: '林文水',
-        title: '教授',
-        hireDate:"2010-09",
-        privilege: 't',
+        courseid:'98',
+        courseName: '编译原理',
+        academy: '信息学院',
+        mainTeacher: '林子雨',
+        stunum: '98',
+        term:'2018-09'
+      }, {
+        courseid:'12',
+        courseName: '计网',
+        academy: '信息学院',
+        mainTeacher: '吴素珍',
+        stunum: '40',
+        term:'2018-09'
       }],
       navList:[
-        {name:'/course',navItem:'课程信息管理'},
-        {name:'/stutable',navItem:'学生信息管理'},
-        {name:'/teatable',navItem:'教师信息管理'},
-        {name:'/admin',navItem:'管理员信息'}
+        {name:'/teainfo',navItem:'教师个人信息'},
+        {name:'/teacourse',navItem:'所授课程信息'}
       ],
       formInline: {
-        id: '',
-        name: '',
-        title:'',
-        hireDate:'',
-        root:''
+        cid: '',
+        cname: '',
+        academy:'',
+        teacher:'',
+        Maxnum:'',
+        DateOfTerm:''
       },
       multipleSelection:0
 
@@ -198,27 +210,11 @@ export default {
     deleteRow(index, rows) {
       rows.splice(index, 1);
     },
-    updateRow(index, rows) {
-      console.log(this.form.username);
-      console.log("submit!");
-      console.log(this.radio);
-      this.$axios({
-        method:'post',
-        url:'http://150.158.171.212:8080/checklogin',
-        data:{	//按照对象的格式去组织data，key-value形式
-          "stu":this.form.username,
-          "pass":this.form.password,
-          "permissionId":this.radio,
-        }
-      }).then(response => { //这里的response是通过get方法请求得到的内容
-        //在这里添加对于数据的操作
-        console.log(11111111)
-        //经常性的操作如下
-        console.log(response.data) //在控制台中打印其data部分内容
-      })
+    updateRow() {
+
     },
     onSubmit(){},
-    addTeacher(){},
+    addCourse(){},
     toggleSelection(rows) {
       if (rows) {
         rows.forEach(row => {
@@ -240,5 +236,8 @@ export default {
 <style scoped>
 .span-row{
   min-height: 36px;
+}
+.span-col{
+  min-width: 100px;
 }
 </style>
