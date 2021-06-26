@@ -8,6 +8,7 @@
         userId:"90003",
         privilege:"",
         name: "Common",
+        courseId:"",
         data(){
             return {
 

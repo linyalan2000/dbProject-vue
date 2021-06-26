@@ -39,10 +39,10 @@
           <el-input v-model="formInline.score" ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="addScore">录入学生成绩</el-button>
+          <el-button type="primary" @click="addScore">录入成绩</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询</el-button>
+          <el-button type="primary" @click="queryScore">查询所有学生成绩</el-button>
         </el-form-item>
       </el-form>
       <el-row class="span-row"></el-row>
@@ -95,7 +95,7 @@
                 @click.native.prevent="updateRow(scope.$index, tableData)"
                 type="text"
                 size="small">
-              修改
+              修改成绩
             </el-button>
           </template>
         </el-table-column>
@@ -113,44 +113,45 @@ export default {
   name: "TeaAddScore",
   data(){
     return{
-      tableData: [{
-        courseid:'01',
-        courseName: 'os',
-        sid: '95002',
-        sname: '林子雨',
-        score: '99'
-      }, {
-        courseid:'01',
-        courseName: 'os',
-        sid: '95002',
-        sname: '赵晨',
-        score: '60'
-      }, {
-        courseid:'01',
-        courseName: 'os',
-        sid: '95002',
-        sname: '王五',
-        score: '88'
-      },  {
-        courseid:'01',
-        courseName: 'os',
-        sid: '95002',
-        sname: '李四',
-        score: '72'
-      }, {
-        courseid:'01',
-        courseName: 'os',
-        sid: '95002',
-        sname: '张三',
-        score: '94'
-      }],
+      tableData:[],
+      // tableData: [{
+      //   courseid:'01',
+      //   courseName: 'os',
+      //   sid: '95002',
+      //   sname: '林子雨',
+      //   score: '99'
+      // }, {
+      //   courseid:'01',
+      //   courseName: 'os',
+      //   sid: '95002',
+      //   sname: '赵晨',
+      //   score: '60'
+      // }, {
+      //   courseid:'01',
+      //   courseName: 'os',
+      //   sid: '95002',
+      //   sname: '王五',
+      //   score: '88'
+      // },  {
+      //   courseid:'01',
+      //   courseName: 'os',
+      //   sid: '95002',
+      //   sname: '李四',
+      //   score: '72'
+      // }, {
+      //   courseid:'01',
+      //   courseName: 'os',
+      //   sid: '95002',
+      //   sname: '张三',
+      //   score: '94'
+      // }],
       navList:[
         {name:'/teainfo',navItem:'教师个人信息'},
         {name:'/teacourse',navItem:'所授课程信息'}
       ],
       formInline: {
-        cid: '',
-        cname: ''
+        sid: '',
+        score: ''
       },
       multipleSelection:0
 
@@ -164,11 +165,52 @@ export default {
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
     },
-    updateRow(){
-
+    addScore() {
+      this.$axios({//添加学生成绩信息,不需要返回任何信息
+        method:'post',
+        url:'http://150.158.171.212:8080/updatescore',
+        data:{	//按照对象的格式去组织data，key-value形式
+          "cno":this.Common.courseId,
+          "sno":this.formInline.sid,
+          "score":this.formInline.score,
+        },
+      }).then(response => { //这里的response是通过get方法请求得到的内容
+        console.log("添加学生的成绩不需要返回任何信息");
+      })
     },
-    onSubmit(){},
-    addScore(){
+    queryScore() {
+      this.$axios({
+        method:'get',
+        url:'http://150.158.171.212:8080/getscore?cno=' + this.Common.courseId+'&tno='+this.Common.userId,
+      }).then(response => { //这里的response是通过get方法请求得到的内容
+        console.log(response.data) //在控制台中打印其data部分内容
+        var res = response.data;//课程号，课程名称，学号，学生姓名，学生成绩
+        if (res != null){
+          this.tableData = res
+        }
+        else{
+          this.$alert('查询学生信息失败', {
+            confirmButtonText: '确定',
+            callback: action => {
+              this.$message({
+                type: 'info',
+                message: `action: ${action}`
+              });
+            }
+          })
+        }
+      })
+    },
+    deleteRow(index, rows) {
+      rows.splice(index, 1);
+    },
+    updateRow(index, rows) {//这里咋获取这一行对应的学号和课程号
+      this.$axios({//添加学生成绩信息,不需要返回任何信息
+        method:'get',
+        url:'http://150.158.171.212:8080/courseinfo?sno=' + this.formInline.sid+'&cno='+this.Common.courseId,
+      }).then(response => { //这里的response是通过get方法请求得到的内容
+        console.log("不需要返回任何信息");
+      })
     },
     toggleSelection(rows) {
       if (rows) {

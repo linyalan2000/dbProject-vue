@@ -71,7 +71,13 @@
                     console.log(response.data) //在控制台中打印其data部分内容
                     var res = response.data
                     if (res.name != null){
+                      if(res.privilege=='s'){
                         this.$router.push("/stuinfo");
+                      }else if(res.privilege=='t'){
+                        this.$router.push("/teainfo");
+                      }else{
+                        this.$router.push("/admin");
+                      }
                         this.Common.userName = res.name;
                         this.Common.userId = this.form.username;
                         this.Common.privilege = res.privilege;

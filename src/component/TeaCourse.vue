@@ -39,7 +39,7 @@
           <el-input v-model="formInline.cname" ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询</el-button>
+          <el-button type="primary" @click="queryCourse">查询</el-button>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="addScore">录入学生成绩</el-button>
@@ -156,7 +156,6 @@ export default {
       var res = response.data;//课程号，课程名称，开课院系，已选人数
       if (res != null){
         this.tableData = res
-
       }
       else{
         this.$alert('搜索课程信息失败', {
@@ -179,11 +178,34 @@ export default {
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
     },
-    deleteRow(index, rows) {
-      rows.splice(index, 1);
+    // deleteRow(index, rows) {
+    //   rows.splice(index, 1);
+    // },
+    queryCourse(){
+      this.$axios({
+        method:'get',
+        url:'http://150.158.171.212:8080/quirecourse?cno=' + this.formInline.cid,
+      }).then(response => { //这里的response是通过get方法请求得到的内容
+        console.log(response.data) //在控制台中打印其data部分内容
+        var res = response.data;//课程号，课程名称，开课院系，主讲老师，学生人数
+        if (res != null){
+          this.tableData = res
+        }
+        else{
+          this.$alert('查询课程信息失败', {
+            confirmButtonText: '确定',
+            callback: action => {
+              this.$message({
+                type: 'info',
+                message: `action: ${action}`
+              });
+            }
+          })
+        }
+      })
     },
-    onSubmit(){},
     addScore(){
+      this.Common.courseId=this.formInline.cid;//这样可以把输入框内的学号给Common.courseId???
       this.$router.push("/teaaddscore");
     },
     toggleSelection(rows) {
@@ -199,7 +221,6 @@ export default {
       this.multipleSelection = val;
       console.log(this.multipleSelection) //记录了所有选中的记录
     }
-
   }
 }
 </script>
