@@ -187,6 +187,19 @@ export default {
         },
       }).then(response => { //这里的response是通过get方法请求得到的内容
         console.log("添加学生的成绩不需要返回任何信息");
+        console.log(response.data);
+        if(response.data == 1){
+          //录入成功
+          this.$message('录入成功');
+          this.formInline.sid='';
+          this.formInline.score='';
+        }
+        else{
+          //录入失败
+          this.$message('录入失败');
+          this.formInline.sid='';
+          this.formInline.score='';
+        }
       })
     },
     queryScore() {
@@ -195,6 +208,7 @@ export default {
         url:'http://150.158.171.212:8080/getscore?cno=' + this.Common.courseId+'&tno='+this.Common.userId,
       }).then(response => { //这里的response是通过get方法请求得到的内容
         console.log(response.data) //在控制台中打印其data部分内容
+
         var res = response.data;//课程号，课程名称，学号，学生姓名，学生成绩
         if (res != null){
           this.tableData = res
@@ -215,12 +229,50 @@ export default {
     deleteRow(index, rows) {
       rows.splice(index, 1);
     },
-    updateRow(index, rows) {//这里咋获取这一行对应的学号和课程号
+    updateRow(index) {
+      var newscore;
+      this.$prompt('请输入此学生的成绩', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern:/^\d{0,2}$/,
+        inputErrorMessage: '成绩格式不正确'
+      }).then(({ value }) => {
+        console.log("修改后的成绩为：");
+        console.log(value);
+        newscore=value;
+        this.$message({
+          type: 'success',
+          message: '新的成绩: ' + value,
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消输入'
+        });
+      });
+
       this.$axios({//添加学生成绩信息,不需要返回任何信息
-        method:'get',
-        url:'http://150.158.171.212:8080/courseinfo?sno=' + this.formInline.sid+'&cno='+this.Common.courseId,
+        method:'post',
+        url:'http://150.158.171.212:8080/updatescore',
+        data:{	//按照对象的格式去组织data，key-value形式
+          "cno":this.Common.courseId,
+          "sno":this.tableData[index].sid,
+          "score":newscore
+        },
       }).then(response => { //这里的response是通过get方法请求得到的内容
-        console.log("不需要返回任何信息");
+        console.log(response.data);
+        // if(response.data == 1){
+        //   //录入成功
+        //   this.$message('录入成功');
+        //   this.formInline.sid='';
+        //   this.formInline.score='';
+        // }
+        // else{
+        //   //录入失败
+        //   this.$message('录入失败');
+        //   this.formInline.sid='';
+        //   this.formInline.score='';
+        // }
       })
     },
     toggleSelection(rows) {

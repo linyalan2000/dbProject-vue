@@ -36,6 +36,19 @@
         <el-form-item label="课程名：">
           <el-input v-model="formInline.cname" ></el-input>
         </el-form-item>
+        <el-dropdown split-button type="primary">
+          学期选择
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="1up">大一上</el-dropdown-item>
+            <el-dropdown-item command="1down">大一下</el-dropdown-item>
+            <el-dropdown-item command="2up">大二上</el-dropdown-item>
+            <el-dropdown-item command="2down">大二下</el-dropdown-item>
+            <el-dropdown-item command="3up">大三上</el-dropdown-item>
+            <el-dropdown-item command="3down">大三下</el-dropdown-item>
+            <el-dropdown-item command="4up">大四上</el-dropdown-item>
+            <el-dropdown-item command="4down">大四下</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">查询</el-button>
         </el-form-item>
@@ -55,32 +68,44 @@
             prop="courseid"
             label="课程号"
             header-align="center"
-            width="200">
+            width="100">
         </el-table-column>
         <el-table-column
             fixed
             prop="courseName"
             label="课程名称"
             header-align="center"
-            width="200">
+            width="150">
         </el-table-column>
         <el-table-column
             prop="academy"
             label="开课院系"
             header-align="center"
-            width="220">
+            width="200">
         </el-table-column>
         <el-table-column
             prop="mainTeacher"
             label="主讲老师"
             header-align="center"
-            width="220">
+            width="200">
         </el-table-column>
         <el-table-column
             prop="score"
             label="课程成绩"
             header-align="center"
-            width="220">
+            width="120">
+        </el-table-column>
+        <el-table-column
+            prop="credit"
+            label="课程学分"
+            header-align="center"
+            width="120">
+        </el-table-column>
+        <el-table-column
+            prop="term"
+            label="学期"
+            header-align="center"
+            width="120">
         </el-table-column>
 
       </el-table>
@@ -101,31 +126,41 @@ export default {
         courseName: 'os',
         academy: '信息学院',
         mainTeacher: '郑炜',
-        score: '100'
+        score: '100',
+        credit:'4',
+        term:'大二上'
       }, {
         courseid:'02',
         courseName: '数据库',
         academy: '信息学院',
         mainTeacher: '林紫雨',
-        score: '90'
+        score: '90',
+        credit:'4',
+        term:'大二上'
       }, {
         courseid:'03',
         courseName: '系统结构',
         academy: '信息学院',
         mainTeacher: '吴素贞',
-        score: '80'
+        score: '80',
+        credit:'4',
+        term:'大二上'
       },  {
         courseid:'04',
         courseName: '编译原理',
         academy: '信息学院',
         mainTeacher: '李慧其',
-        score: '90'
+        score: '90',
+        credit:'4',
+        term:'大二上'
       }, {
         courseid:'05',
         courseName: 'os',
         academy: '信息学院',
         mainTeacher: '郑炜',
-        score: '100'
+        score: '100',
+        credit:'4',
+        term:'大二上'
       }],
       navList:[
         {name:'/stuinfo',navItem:'学生个人信息'},
@@ -136,7 +171,6 @@ export default {
         cname: ''
       },
       multipleSelection:0
-
     }
   },
   methods: {
