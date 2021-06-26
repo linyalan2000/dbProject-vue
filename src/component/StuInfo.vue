@@ -27,11 +27,8 @@
       <el-row>
         学分进度
         <el-row class="span-row0"></el-row>
-        <!--        <el-progress :percentage="90" status="success"></el-progress>-->
-        <el-progress :text-inside="true" :stroke-width="24" :percentage="90" status="success"></el-progress>
+        <el-progress :text-inside="true" :stroke-width="24" :percentage=this.credit status="success"></el-progress>
       </el-row>
-
-
         <el-row class="span-row"></el-row>
         <el-row class="span-row"></el-row>
 
@@ -62,10 +59,10 @@
           <el-form-item label="预计毕业时间：">
             <el-input v-model="formInline.graduateTime" ></el-input>
           </el-form-item>
-          <el-form-item label="密码：" >
-            <el-input v-model="formInline.pass" ></el-input>
+          <el-form-item label="密码：">
+            <el-input v-model="formInline.pass"  type="password"></el-input>
           </el-form-item>
-          <el-button type="text" @click="open">修改</el-button>
+          <el-button type="text" @click="updatePwd" >修改</el-button>
         </el-form>
     </el-col>
 
@@ -77,6 +74,7 @@ export default {
   name: "StuInfo",
   data(){
     return{
+      credit:"",
       navList:[
         {name:'/stuinfo',navItem:'学生个人信息'},
         {name:'/stuscore',navItem:'个人成绩查询'}
@@ -97,7 +95,7 @@ export default {
     }
   },
   mounted() {
-    this.$axios({
+    this.$axios({//获取学生的个人信息
       method:'get',
       url:'http://150.158.171.212:8080/stuinfo?id=' + this.Common.userId
     }).then(response => { //这里的response是通过get方法请求得到的内容
@@ -111,7 +109,14 @@ export default {
         this.formInline.major=res.major;
         this.formInline.graduateTime=res.leaveyear;
         this.formInline.pass=res.pass;
-
+    }),
+    this.$axios({//获取已修总学分
+      method:'get',
+      url:'http://150.158.171.212:8080/getcredit?sno=' + this.Common.userId
+    }).then(response => { //这里的response是通过get方法请求得到的内容
+        console.log(response.data) //在控制台中打印其data部分内容
+        var res = response.data;
+        this.credit = res.wholeCredit;
     })
   },
   methods: {
@@ -122,32 +127,39 @@ export default {
     format(percentage) {
       return percentage === 100 ? '满' : `${percentage}%`;
     },
-    open() {
-      var flag;
-      this.$confirm('此操作将更改您的登录密码, 是否继续?', '提示', {
+    updatePwd() {//更新自己的密码
+      var newpwd;
+      this.$prompt('请输入新的密码', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
+      }).then(({ value }) => {
+        newpwd = value;
+        console.log("修改后的密码为：");
+        console.log(value);
         this.$message({
           type: 'success',
-          message: '更改密码成功!',
-          flag:1
+          message: '密码修改成功！',
         });
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '已取消更改密码',
-          flag:null
+          message: '取消输入新密码'
         });
       });
-      if(flag != null){
-        console("修改后的密码：");
-        console(this.formInline.pass);
-      }
+
+      this.$axios({//把新的密码传到后端
+        method:'post',
+        url:'http://150.158.171.212:8080/updatescore',
+        data:{	//按照对象的格式去组织data，key-value形式
+          "stu":this.Commom.userId,
+          "pass":newpwd,
+          "permissionId":this.Common.privilege
+        },
+      }).then(response => { //这里的response是通过get方法请求得到的内容
+        console.log(response.data);
+      })
 
     }
-
   }
 }
 </script>
