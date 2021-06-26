@@ -5,7 +5,7 @@
 <script>
     export default {
         userName:"",
-        userId:"90001",
+        userId:"10001",
         privilege:"",
         name: "Common",
         courseId:"",

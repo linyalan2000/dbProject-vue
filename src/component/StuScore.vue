@@ -36,8 +36,8 @@
         <el-form-item label="课程名：">
           <el-input v-model="formInline.cname" ></el-input>
         </el-form-item>
-        <el-dropdown split-button type="primary">
-          学期选择
+        <el-dropdown split-button type="primary" @command="handleCommand">
+          {{this.termMap[this.term]}}
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item command="1up">大一上</el-dropdown-item>
             <el-dropdown-item command="1down">大一下</el-dropdown-item>
@@ -121,6 +121,18 @@ export default {
   name: "StuScore",
   data(){
     return{
+      termMap:{
+        "学期选择": "学期选择",
+        "1up": "大一上",
+        "1down": "大一下",
+        "2up": "大二上",
+        "2down": "大二下",
+        "3up": "大三上",
+        "3down": "大三下",
+        "4up": "大四上",
+        "4down": "大四下",
+      },
+      term:'学期选择',
       tableData: [{
         courseid:'01',
         courseName: 'os',
@@ -174,6 +186,9 @@ export default {
     }
   },
   methods: {
+    handleCommand(command){
+      this.term = command
+    },
     logout(){
       console.log("logout!");
       this.$router.push("/login")
@@ -185,10 +200,9 @@ export default {
       rows.splice(index, 1);
     },
     queryScore(){
-
       this.$axios({
         method:'get',
-        url:'http://150.158.171.212:8080/getstuscore?cno=' + this.Common.courseId+'&sno='+this.Common.userId+'&term='+,
+        url:'http://150.158.171.212:8080/getstuscore?cno=' + this.formInline.cid+'&sno='+this.Common.userId+'&term='+ this.term,
       }).then(response => { //这里的response是通过get方法请求得到的内容
         console.log(response.data) //在控制台中打印其data部分内容
 
