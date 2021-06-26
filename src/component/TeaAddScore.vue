@@ -157,6 +157,17 @@ export default {
 
     }
   },
+  mounted() {
+    this.$axios({//添加学生成绩信息,不需要返回任何信息
+      method:'get',
+      url:'http://150.158.171.212:8080/getscore?cno=' + this.Common.courseId+'&tno='+this.Common.userId,
+      // url:'http://150.158.171.212:8080/getscore?cno=30001&tno=90001'
+    }).then(response => { //这里的response是通过get方法请求得到的内容
+      console.log("不需要返回任何信息");
+      console.log(response.data);
+      this.tableData = response.data;
+    })
+  },
   methods: {
     logout(){
       console.log("logout!");
