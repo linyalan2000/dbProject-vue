@@ -50,7 +50,7 @@
           </el-dropdown-menu>
         </el-dropdown>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询</el-button>
+          <el-button type="primary" @click="queryScore">查询</el-button>
         </el-form-item>
       </el-form>
       <el-row class="span-row"></el-row>
@@ -184,7 +184,33 @@ export default {
     deleteRow(index, rows) {
       rows.splice(index, 1);
     },
-    onSubmit(){},
+    queryScore(){
+
+      this.$axios({
+        method:'get',
+        url:'http://150.158.171.212:8080/getstuscore?cno=' + this.Common.courseId+'&sno='+this.Common.userId+'&term='+,
+      }).then(response => { //这里的response是通过get方法请求得到的内容
+        console.log(response.data) //在控制台中打印其data部分内容
+
+        var res = response.data;//课程号，课程名称，学号，学生姓名，学生成绩
+        if (res != null){
+          this.tableData = res
+        }
+        else{
+          this.$alert('查询学生信息失败', {
+            confirmButtonText: '确定',
+            callback: action => {
+              this.$message({
+                type: 'info',
+                message: `action: ${action}`
+              });
+            }
+          })
+        }
+      })
+
+
+    },
     toggleSelection(rows) {
       if (rows) {
         rows.forEach(row => {
