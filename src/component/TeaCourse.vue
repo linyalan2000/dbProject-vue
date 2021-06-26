@@ -56,31 +56,31 @@
             width="55">
         </el-table-column>
         <el-table-column
-            prop="courseid"
+            prop="cno"
             label="课程号"
             header-align="center"
             width="200">
         </el-table-column>
         <el-table-column
-            prop="courseName"
+            prop="cname"
             label="课程名称"
             header-align="center"
             width="200">
         </el-table-column>
         <el-table-column
-            prop="academy"
+            prop="department"
             label="开课院系"
             header-align="center"
             width="220">
         </el-table-column>
         <el-table-column
-            prop="mainTeacher"
+            prop="tname"
             label="主讲老师"
             header-align="center"
             width="220">
         </el-table-column>
         <el-table-column
-            prop="stunum"
+            prop="stuNum"
             label="学生人数"
             header-align="center"
             width="220">
@@ -99,37 +99,38 @@ export default {
   name: "TeaCourse",
   data(){
     return{
-      tableData: [{
-        courseid:'01',
-        courseName: 'os',
-        academy: '信息学院',
-        mainTeacher: '林子雨',
-        stunum: '120'
-      }, {
-        courseid:'03',
-        courseName: '数据库',
-        academy: '信息学院',
-        mainTeacher: '林子雨',
-        stunum: '50'
-      }, {
-        courseid:'10',
-        courseName: '系统结构',
-        academy: '信息学院',
-        mainTeacher: '林子雨',
-        stunum: '48'
-      },  {
-        courseid:'98',
-        courseName: '编译原理',
-        academy: '信息学院',
-        mainTeacher: '林子雨',
-        stunum: '98'
-      }, {
-        courseid:'12',
-        courseName: '计网',
-        academy: '信息学院',
-        mainTeacher: '林子雨',
-        stunum: '40'
-      }],
+      tableData:[],
+      // tableData: [{
+      //   courseid:'01',
+      //   courseName: 'os',
+      //   academy: '信息学院',
+      //   mainTeacher: '林子雨',
+      //   stunum: '120'
+      // }, {
+      //   courseid:'03',
+      //   courseName: '数据库',
+      //   academy: '信息学院',
+      //   mainTeacher: '林子雨',
+      //   stunum: '50'
+      // }, {
+      //   courseid:'10',
+      //   courseName: '系统结构',
+      //   academy: '信息学院',
+      //   mainTeacher: '林子雨',
+      //   stunum: '48'
+      // },  {
+      //   courseid:'98',
+      //   courseName: '编译原理',
+      //   academy: '信息学院',
+      //   mainTeacher: '林子雨',
+      //   stunum: '98'
+      // }, {
+      //   courseid:'12',
+      //   courseName: '计网',
+      //   academy: '信息学院',
+      //   mainTeacher: '林子雨',
+      //   stunum: '40'
+      // }],
       navList:[
         {name:'/teainfo',navItem:'教师个人信息'},
         {name:'/teacourse',navItem:'所授课程信息'}
@@ -143,23 +144,19 @@ export default {
     }
   },
   mounted() {
-    console("教师号：");
-    console(this.Common.userId);
-    console("接下来输出此教师的相关课程有哪些：");
+    console.log("教师号：");
+    console.log(this.Common.userId);
+    console.log("接下来输出此教师的相关课程有哪些：");
     this.$axios({
-      method:'post',
-      url:'http://150.158.171.212:8080/courseinfo?id=90003',
-      data:{	//按照对象的格式去组织data，key-value形式
-        "tid":this.Common.userId,
-      }
+      method:'get',
+      url:'http://150.158.171.212:8080/courseinfo?id=' + this.Common.userId,
+
     }).then(response => { //这里的response是通过get方法请求得到的内容
       console.log(response.data) //在控制台中打印其data部分内容
       var res = response.data;//课程号，课程名称，开课院系，已选人数
-      if (res.name != null){
-        this.Common.cid = res.cid;
-        this.Common.cname = res.cname;
-        this.Common.academy = res.academy;
-        this.Common.stunum = res.stunum;
+      if (res != null){
+        this.tableData = res
+
       }
       else{
         this.$alert('搜索课程信息失败', {

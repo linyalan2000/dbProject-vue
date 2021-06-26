@@ -5,7 +5,7 @@
 <script>
     export default {
         userName:"",
-        userId:"",
+        userId:"90003",
         privilege:"",
         name: "Common",
         data(){

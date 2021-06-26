@@ -38,7 +38,7 @@
         <el-row>基本信息</el-row>
         <el-row class="span-row0"></el-row>
         <el-form :inline="true" :model="formInline" class="select-form">
-          <el-form-item label="学号：">
+          <el-form-item label="学号：" :disabled="true">
             <el-input v-model="formInline.id" ></el-input>
           </el-form-item>
           <el-form-item label="姓名：">
@@ -62,7 +62,7 @@
           <el-form-item label="预计毕业时间：">
             <el-input v-model="formInline.graduateTime" ></el-input>
           </el-form-item>
-          <el-form-item label="密码：">
+          <el-form-item label="密码：" >
             <el-input v-model="formInline.pass" ></el-input>
           </el-form-item>
           <el-button type="text" @click="open">修改</el-button>
