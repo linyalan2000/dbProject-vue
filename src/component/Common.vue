@@ -6,7 +6,7 @@
     export default {
         userName:"",
         userId:"10001",
-        privilege:"",
+        privilege:"s",
         name: "Common",
         courseId:"",
         data(){

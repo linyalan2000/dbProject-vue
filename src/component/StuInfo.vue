@@ -116,7 +116,7 @@ export default {
     }).then(response => { //这里的response是通过get方法请求得到的内容
         console.log(response.data) //在控制台中打印其data部分内容
         var res = response.data;
-        this.credit = res.wholeCredit;
+        this.credit = res;
     })
   },
   methods: {
@@ -136,6 +136,21 @@ export default {
         newpwd = value;
         console.log("修改后的密码为：");
         console.log(value);
+
+        this.$axios({//把新的密码传到后端
+          method:'post',
+          url:'http://150.158.171.212:8080/editpass',
+          data:{	//按照对象的格式去组织data，key-value形式
+            "stu":this.Common.userId,
+            "pass":value,
+            "permissionId":this.Common.privilege
+          },
+        }).then(response => { //这里的response是通过get方法请求得到的内容
+          console.log(111111)
+          console.log(response.data);
+        })
+
+
         this.$message({
           type: 'success',
           message: '密码修改成功！',
@@ -146,18 +161,6 @@ export default {
           message: '取消输入新密码'
         });
       });
-
-      this.$axios({//把新的密码传到后端
-        method:'post',
-        url:'http://150.158.171.212:8080/updatescore',
-        data:{	//按照对象的格式去组织data，key-value形式
-          "stu":this.Commom.userId,
-          "pass":newpwd,
-          "permissionId":this.Common.privilege
-        },
-      }).then(response => { //这里的response是通过get方法请求得到的内容
-        console.log(response.data);
-      })
 
     }
   }
