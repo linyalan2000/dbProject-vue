@@ -30,13 +30,19 @@
     <el-row>
       <el-form :inline="true" :model="formInline" class="select-form">
         <el-form-item label="学号：">
-          <el-input v-model="formInline.sno" ></el-input>
+          <el-input v-model="formInline.sno" style="width:140px"></el-input>
         </el-form-item>
-        <el-form-item label="课程号：">
-          <el-input v-model="formInline.cno" ></el-input>
+        <el-form-item label="课程号：" >
+          <el-input v-model="formInline.cno" style="width:140px"></el-input>
+        </el-form-item>
+        <el-form-item label="授课教师(编号)：">
+          <el-input v-model="formInline.tno" style="width:140px"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="queryStudent">查询</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="addStudent">添加学生</el-button>
         </el-form-item>
 <!--        <el-form-item>-->
 <!--          <el-button type="primary" @click="batchDelete">批量删除</el-button>-->
@@ -179,7 +185,8 @@ export default {
       ],
       formInline: {
         sno: '',
-        cno:''
+        cno:'',
+        tno:''
       },
       multipleSelection:0
 
@@ -252,7 +259,7 @@ export default {
           data:{	//按照对象的格式去组织data，key-value形式
             "sno":this.tableData[index].sno.toString(),
             "cno":this.tableData[index].cno.toString(),
-            "newscore":newscore,
+            "score":newscore,
           },
         }).then(response => { //不需要返回任何信息
           console.log(response.data);
@@ -300,6 +307,44 @@ export default {
       } else {
         this.$refs.multipleTable.clearSelection();
       }
+    },
+    addStudent(){//添加学生选了具体某门课的信息，在选课表中insert即可
+      this.$axios({//输入sno cno tno
+        method:'get',
+        url:'http://150.158.171.212:8080/gettea?sno=' + this.formInline.sno+
+        '&cno='+this.formInline.cno+'&tno='+this.formInline.tno,
+      }).then(response => {
+        console.log(response.data) //在控制台中打印其data部分内容
+        var res = response.data;//返回sno  sname  cno cname  tname  score term
+          this.$axios({//添加新入职教师的基本信息,不需要返回任何信息
+            method: 'post',
+            url: 'http://150.158.171.212:8080/addteacher',
+            data: {	//tno, tname, title,hireDate,root
+              "tno": this.formInline.tno,
+              "tname": this.formInline.tname,
+              "title": this.formInline.title,
+              "tsex": this.formInline.tsex,
+              "pass": this.formInline.pass,
+              "hireDate": this.formInline.hireDate,
+              "root": this.formInline.root,
+            },
+          }).then(response => { //这里的response是通过get方法请求得到的内容
+            console.log("添加教师的成绩不需要返回任何信息");
+            console.log(response);
+            if (response != null && response.data == 1) {
+              //录入成功
+              this.$message('添加成功');
+              this.formInline.sid = '';
+              this.formInline.score = '';
+            } else {
+              //录入失败
+              this.$message('添加失败');
+              this.formInline.sid = '';
+              this.formInline.score = '';
+            }
+          })
+
+      })
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;

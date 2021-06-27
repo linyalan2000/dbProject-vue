@@ -33,7 +33,10 @@
     <el-row>
       <el-form :inline="true" :model="formInline" class="select-form">
         <el-form-item label="课程号：">
-          <el-input v-model="formInline.cid" ></el-input>
+          <el-input v-model="formInline.cno" ></el-input>
+        </el-form-item>
+        <el-form-item label="主讲老师(编号)：">
+          <el-input v-model="formInline.tno" ></el-input>
         </el-form-item>
         <el-form-item label="课程名程：">
           <el-input v-model="formInline.cname" ></el-input>
@@ -41,17 +44,11 @@
         <el-form-item label="开课院系：">
           <el-input v-model="formInline.academy" ></el-input>
         </el-form-item>
-        <el-form-item label="主讲老师：">
-          <el-input v-model="formInline.teacher" ></el-input>
-        </el-form-item>
-        <el-form-item label="最多选修人数：">
-          <el-input v-model="formInline.Maxnum" ></el-input>
-        </el-form-item>
         <el-form-item label="学期时间：">
-          <el-input v-model="formInline.DateOfTerm" ></el-input>
+          <el-input v-model="formInline.term" ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询</el-button>
+          <el-button type="primary" @click="queryCourse">查询</el-button>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="addCourse">添加课程信息</el-button>
@@ -69,13 +66,13 @@
             width="55">
         </el-table-column>
         <el-table-column
-            prop="courseid"
+            prop="cno"
             label="课程号"
             header-align="center"
             width="100">
         </el-table-column>
         <el-table-column
-            prop="courseName"
+            prop="cname"
             label="课程名称"
             header-align="center"
             width="150">
@@ -87,16 +84,10 @@
             width="150">
         </el-table-column>
         <el-table-column
-            prop="mainTeacher"
+            prop="tname"
             label="主讲老师"
             header-align="center"
             width="150">
-        </el-table-column>
-        <el-table-column
-            prop="stunum"
-            label="最多选修人数"
-            header-align="center"
-            width="120">
         </el-table-column>
         <el-table-column
             prop="term"
@@ -148,56 +139,60 @@ export default {
   data(){
     return{
       tableData: [{
-        courseid:'01',
-        courseName: '操作系统',
+        cno:'01',
+        cname: '操作系统',
         academy: '信息学院',
-        mainTeacher: '郑伟',
-        stunum: '120',
-        term:'2018-09'
+        tname: '郑伟',
+        term:'大三下'
       }, {
-        courseid:'03',
-        courseName: '计算机网络',
+        cno:'03',
+        cname: '计算机网络',
         academy: '信息学院',
-        mainTeacher: '林子雨',
-        stunum: '50',
-        term:'2018-09'
+        tname: '林子雨',
+        term:'大三上'
       }, {
-        courseid:'10',
-        courseName: '电子电力技术',
+        cno:'10',
+        cname: '电子电力技术',
         academy: '信息学院',
-        mainTeacher: '严为民',
-        stunum: '48',
-        term:'2018-09'
+        tname: '严为民',
+        term:'大二上'
       },  {
-        courseid:'98',
-        courseName: '编译原理',
+        cno:'98',
+        cname: '编译原理',
         academy: '信息学院',
-        mainTeacher: '林子雨',
-        stunum: '98',
-        term:'2018-09'
+        tname: '林子雨',
+        term:'大三下'
       }, {
-        courseid:'12',
-        courseName: '计网',
+        cno:'12',
+        cname: '计网',
         academy: '信息学院',
-        mainTeacher: '吴素珍',
-        stunum: '40',
-        term:'2018-09'
+        tname: '吴素珍',
+        term:'大二上'
       }],
       navList:[
         {name:'/teainfo',navItem:'教师个人信息'},
         {name:'/teacourse',navItem:'所授课程信息'}
       ],
       formInline: {
-        cid: '',
+        cno: '',
         cname: '',
         academy:'',
-        teacher:'',
-        Maxnum:'',
-        DateOfTerm:''
+        tno:'',
+        term:''
       },
       multipleSelection:0
 
     }
+  },
+  mounted(){//加载所有的课程信息
+    this.$axios({
+      method:'get',
+      url:'http://150.158.171.212:8080/getadminscore?cno=&sno=',//这里要修改
+    }).then(response => { //sno sname cno  cname tname score term
+      console.log("加载所有课程信息（包括对应的老师）");
+      console.log(response.data);//需要返回的参数为cno cname academy tname maxnum term
+      //this.tableData = response.data;//这里应该放出来
+    })
   },
   methods: {
     logout(){
@@ -210,11 +205,32 @@ export default {
     deleteRow(index, rows) {
       rows.splice(index, 1);
     },
-    updateRow() {
+    queryCourse(){//查询课程信息
+      this.$axios({
+        method:'get',
+        url:'http://150.158.171.212:8080/getadminscore?cno=' + this.formInline.cno+"&tno="+this.formInline.tno,
+      }).then(response => {
+        console.log(response.data) //在控制台中打印其data部分内容
+        var res = response.data;//返回cno cname academy tname term
+        if (res != null){
+          this.tableData = res
+        }
+        else{
+          this.$alert('查询相应信息失败', {
+            confirmButtonText: '确定',
+            callback: action => {
+              this.$message({
+                type: 'info',
+                message: `action: ${action}`
+              });
+            }
+          })
+        }
+      })
+    },
+    addCourse(){//添加
 
     },
-    onSubmit(){},
-    addCourse(){},
     toggleSelection(rows) {
       if (rows) {
         rows.forEach(row => {
