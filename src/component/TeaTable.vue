@@ -271,6 +271,17 @@ export default {
         console.log("修改后的职称为：");
         console.log(value);
         newtitle=value;
+        this.$axios({//后端在教师表中更新
+          method:'post',
+          url:'http://150.158.171.212:8080/updateteacher',//这里需要修改接口
+          data:{	//按照对象的格式去组织data，key-value形式
+            "tno":this.tableData[index].tno.toString(),
+            "title":newtitle,
+            "root":this.tableData[index].root
+          },
+        }).then(response => { //这里的response是通过get方法请求得到的内容
+          console.log(response.data);
+        })
         this.$message({
           type: 'success',
           message: '新的职称: ' + value,
@@ -282,17 +293,7 @@ export default {
         });
       });
 
-      this.$axios({//后端在教师表中更新
-        method:'post',
-        url:'http://150.158.171.212:8080/updateteacher',//这里需要修改接口
-        data:{	//按照对象的格式去组织data，key-value形式
-          "tno":this.tableData[index].tno,
-          "title":newtitle,
-          "root":this.tableData[index].root
-        },
-      }).then(response => { //这里的response是通过get方法请求得到的内容
-        console.log(response.data);
-      })
+
     },
     updateroot(index, rows) {//修改教师的权限
       var newroot;
@@ -310,7 +311,7 @@ export default {
           method:'post',
           url:'http://150.158.171.212:8080/updateteacher',//这里需要修改接口
           data:{	//按照对象的格式去组织data，key-value形式
-            "tno":this.tableData[index].tno,
+            "tno":this.tableData[index].tno.toString(),
             "title":this.tableData[index].title,
             "root":newroot
           },

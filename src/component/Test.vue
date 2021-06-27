@@ -81,20 +81,23 @@
                 row.isOK =!row.isOK
             },
             onSubmit(){
+                this.$alert('<el-input>hiddddd</el-input>', 'HTML 片段', {
+                    dangerouslyUseHTMLString: true
+                });
                 // 向后端传递数据
-                this.$axios({
-                    method:'post', //方法选择post方法
-                    url:"http://localhost:8080/post",	//对应的url
-                    data:{	//按照对象的格式去组织data，key-value形式
-                        "stu":this.input,
-                        "pass":'23213'
-                    }
-                }).then(response => {
-                    console.log(response.data)
-                    console.log(response.data.date)
-                    // 可以根据其返回值进行进一步的操作，post的请求的返回值一般为成功的返回码。
-                })
-                console.log(this.input)
+                // this.$axios({
+                //     method:'post', //方法选择post方法
+                //     url:"http://localhost:8080/post",	//对应的url
+                //     data:{	//按照对象的格式去组织data，key-value形式
+                //         "stu":this.input,
+                //         "pass":'23213'
+                //     }
+                // }).then(response => {
+                //     console.log(response.data)
+                //     console.log(response.data.date)
+                //     // 可以根据其返回值进行进一步的操作，post的请求的返回值一般为成功的返回码。
+                // })
+                // console.log(this.input)
             }
         }
     }
