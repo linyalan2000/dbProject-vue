@@ -30,13 +30,13 @@
     <el-row>
       <el-form :inline="true" :model="formInline" class="select-form">
         <el-form-item label="学号：">
-          <el-input v-model="formInline.sid" ></el-input>
+          <el-input v-model="formInline.sno" ></el-input>
         </el-form-item>
         <el-form-item label="课程号：">
-          <el-input v-model="formInline.cid" ></el-input>
+          <el-input v-model="formInline.cno" ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询</el-button>
+          <el-button type="primary" @click="queryStudent">查询</el-button>
         </el-form-item>
       </el-form>
       <el-row class="span-row"></el-row>
@@ -51,31 +51,31 @@
         </el-table-column>
         <el-table-column
             fixed
-            prop="stuid"
+            prop="sno"
             label="学号"
             header-align="center"
             width="150">
         </el-table-column>
         <el-table-column
-            prop="stuname"
+            prop="sname"
             label="姓名"
             header-align="center"
             width="120">
         </el-table-column>
         <el-table-column
-            prop="courseid"
+            prop="cno"
             label="课程号"
             header-align="center"
             width="120">
         </el-table-column>
         <el-table-column
-            prop="course"
+            prop="cname"
             label="课程"
             header-align="center"
             width="120">
         </el-table-column>
         <el-table-column
-            prop="mainTeacher"
+            prop="tname"
             label="主讲老师"
             header-align="center"
             width="120">
@@ -87,7 +87,7 @@
             width="200">
         </el-table-column>
         <el-table-column
-            prop="Term"
+            prop="term"
             label="学期"
             header-align="center"
             width="120">
@@ -113,7 +113,7 @@
             width="120">
           <template slot-scope="scope">
             <el-button
-                @click.native.prevent="updateRow(scope.$index, tableData)"
+                @click.native.prevent="updateScore(scope.$index, tableData)"
                 type="text"
                 size="small">
               修改
@@ -134,68 +134,43 @@ export default {
   data(){
     return{
       tableData: [{
-        stuid: '95002',
-        stuname: '王小虎',
-        courseid:'01',
-        course: 'C语言程序设计',
-        mainTeacher: '陈晨',
+        sno: '95002',
+        sname: '张三',
+        cno:'009',
+        cname: '编译原理',
+        tname: '李慧琪',
+        score: '91',
+        term: '2018-06-01'
+      }, {
+        sno: '95002',
+        sname: '李四',
+        cno:'118',
+        cname: 'C语言程序设计',
+        tname: '陈晨',
         score: '71',
-        Term: '2018-12-01'
-      }, {
-        stuid: '95008',
-        stuname: '张三',
-        courseid:'01',
-        course: '数据结构',
-        mainTeacher: '庄朝晖',
-        score: '94',
-        Term: '2021-06-01'
-      }, {
-        stuid: '95002',
-        stuname: '王小虎',
-        courseid:'01',
-        course: 'C语言程序设计',
-        mainTeacher: '陈晨',
-        score: '71',
-        Term: '2018-12-01'
-      }, {
-        stuid: '95008',
-        stuname: '张三',
-        courseid:'01',
-        course: '数据结构',
-        mainTeacher: '庄朝晖',
-        score: '94',
-        Term: '2021-06-01'
-      }, {
-        stuid: '95002',
-        stuname: '李斯',
-        courseid:'01',
-        course: 'C语言程序设计',
-        mainTeacher: '陈晨',
-        score: '71',
-        Term: '2018-12-01'
+        term: '2018-12-01'
       },  {
-        stuid: '95002',
-        stuname: '张三',
-        courseid:'01',
-        course: 'C语言程序设计',
-        mainTeacher: '陈晨',
-        score: '71',
-        Term: '2018-12-01'
+        sno: '95002',
+        sname: '王五',
+        cno:'140',
+        cname: '数据库',
+        tname: '林子雨',
+        score: '90',
+        term: '2018-12-01'
       }],
       navList:[
         {name:'/teatable',navItem:'教师信息管理'},
         {name:'/stutable',navItem:'学生成绩管理'}
       ],
       formInline: {
-        sid: '',
-        sname:'',
-        class:'',
-        cid:''
+        sno: '',
+        cno:''
       },
       multipleSelection:0
 
     }
   },
+  mounted(){},
   methods: {
     logout(){
       console.log("logout!");
@@ -205,28 +180,70 @@ export default {
       console.log(key, keyPath);
     },
     deleteRow(index, rows) {
+      this.$axios({
+        method:'get',
+        url:'http://150.158.171.212:8080/getscore?sno=' + this.tableData[index].tno,//这里需要修改
+      }).then(response => { //这里的response是通过get方法请求得到的内容
+        console.log(response.data);
+      })
       rows.splice(index, 1);
     },
-    updateRow(index, rows) {
-      console.log(this.form.username);
-      console.log("submit!");
-      console.log(this.radio);
-      this.$axios({
+    updateScore(index, rows) {//更新学生的成绩，应该去选课表中更新score
+      var newscore;
+      this.$prompt('请输入此学生的新的成绩', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern:/^\d{0,2}$/,
+        inputErrorMessage: '成绩格式不正确'
+      }).then(({ value }) => {
+        console.log("修改后的成绩为：");
+        console.log(value);
+        newscore=value;
+        this.$message({
+          type: 'success',
+          message: '新的成绩: ' + value,
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消输入'
+        });
+      });
+      this.$axios({//传给后端sno, cno, newscore, 后端在选课表中更新
         method:'post',
-        url:'http://150.158.171.212:8080/checklogin',
+        url:'http://150.158.171.212:8080/updatescore',//这里需要修改接口
         data:{	//按照对象的格式去组织data，key-value形式
-          "stu":this.form.username,
-          "pass":this.form.password,
-          "permissionId":this.radio,
-        }
-      }).then(response => { //这里的response是通过get方法请求得到的内容
-        //在这里添加对于数据的操作
-        console.log(11111111)
-        //经常性的操作如下
-        console.log(response.data) //在控制台中打印其data部分内容
+          "sno":this.tableData[index].sno,
+          "cno":this.tableData[index].cno,
+          "newscore":newscore
+        },
+      }).then(response => { //不需要返回任何信息
+        console.log(response.data);
       })
     },
-    onSubmit(){},
+    queryStudent(){//输入学号和课程号 ,可查询出对应的学生信息
+      this.$axios({
+        method:'get',
+        url:'http://150.158.171.212:8080/gettea?sno=' + this.formInline.sno+"&cno="+this.formInline.cno,
+      }).then(response => { //返回tno, tname, title,hireDate,root
+        console.log(response.data) //在控制台中打印其data部分内容
+        var res = response.data;//tno, tname, title,hireDate,root
+        if (res != null){
+          this.tableData = res
+        }
+        else{
+          this.$alert('查询此学生选修此课程的相应信息失败', {
+            confirmButtonText: '确定',
+            callback: action => {
+              this.$message({
+                type: 'info',
+                message: `action: ${action}`
+              });
+            }
+          })
+        }
+      })
+    },
     toggleSelection(rows) {
       if (rows) {
         rows.forEach(row => {

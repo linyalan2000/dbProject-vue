@@ -42,13 +42,13 @@
           <el-input v-model="formInline.tsex" ></el-input>
         </el-form-item>
         <el-form-item label="密码：">
-          <el-input v-model="formInline.pass" type="password"></el-input>
+          <el-input v-model="formInline.pass" type="password"  placeholder="初始密码设置为123456"></el-input>
         </el-form-item>
         <el-form-item label="入职时间：">
           <el-input v-model="formInline.hireDate" ></el-input>
         </el-form-item>
         <el-form-item label="权限：">
-          <el-input v-model="formInline.root" ></el-input>
+          <el-input v-model="formInline.root" placeholder="a/管理员     t/教师" ></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="queryTeacher">查询</el-button>
@@ -153,43 +153,44 @@ export default {
   name: "TeaTable",
   data(){
     return{
-      tableData: [{
-        tno: '10001',
-        tname: '庄朝晖',
-        title: '副教授',
-        hireDate:"2010-09",
-        root: 't',
-      }, {
-        tno: '10006',
-        tname: '严严',
-        title: '教授',
-        hireDate:"2010-09",
-        root: 't',
-      }, {
-        tno: '10008',
-        tname: '高淳县',
-        title: '助理教授',
-        hireDate:"2010-09",
-        root: 't',
-      }, {
-        tno: '10020',
-        tname: '林紫雨',
-        title: '副教授',
-        hireDate:"2010-09",
-        root: 't',
-      }, {
-        tno: '10033',
-        tname: '吴素贞',
-        title: '副教授',
-        hireDate:"2010-09",
-        root: 't',
-      },  {
-        tno: '10088',
-        tname: '林文水',
-        title: '教授',
-        hireDate:"2010-09",
-        root: 't',
-      }],
+      tableData:[],
+      // tableData: [{
+      //   tno: '10001',
+      //   tname: '庄朝晖',
+      //   title: '副教授',
+      //   hireDate:"2010-09",
+      //   root: 't',
+      // }, {
+      //   tno: '10006',
+      //   tname: '严严',
+      //   title: '教授',
+      //   hireDate:"2010-09",
+      //   root: 't',
+      // }, {
+      //   tno: '10008',
+      //   tname: '高淳县',
+      //   title: '助理教授',
+      //   hireDate:"2010-09",
+      //   root: 't',
+      // }, {
+      //   tno: '10020',
+      //   tname: '林紫雨',
+      //   title: '副教授',
+      //   hireDate:"2010-09",
+      //   root: 't',
+      // }, {
+      //   tno: '10033',
+      //   tname: '吴素贞',
+      //   title: '副教授',
+      //   hireDate:"2010-09",
+      //   root: 't',
+      // },  {
+      //   tno: '10088',
+      //   tname: '林文水',
+      //   title: '教授',
+      //   hireDate:"2010-09",
+      //   root: 't',
+      // }],
       navList:[
         {name:'/course',navItem:'课程信息管理'},
         {name:'/stutable',navItem:'学生信息管理'},
@@ -199,15 +200,25 @@ export default {
       formInline: {
         tno: '',
         tname: '',
-        tsex:'',
         title:'',
-        pass:'123456',
+        tsex:'',
+        pass:'',
         hireDate:'',
-        root:'t'
+        root:''
       },
       multipleSelection:0
 
     }
+  },
+  mounted(){//一开始展示所有教师的信息
+    this.$axios({
+      method:'get',
+      url:'http://150.158.171.212:8080/gettea?tno=',
+    }).then(response => { //这里的response是通过get方法请求得到的内容
+      console.log("不需要返回任何信息");
+      console.log(response.data);//需要返回的参数为tno tname title hireDate root
+      this.tableData = response.data;
+    })
   },
   methods: {
     logout(){
@@ -243,7 +254,7 @@ export default {
     deleteRow(index, rows) {//删除教师的信息,从教师表中删除即可
       this.$axios({
         method:'get',
-        url:'http://150.158.171.212:8080/getscore?tno=' + this.formInline.tno,//这里需要修改
+        url:'http://150.158.171.212:8080/getscore?tno=' + this.tableData[index].tno,//这里需要修改
       }).then(response => { //这里的response是通过get方法请求得到的内容
         console.log(response.data);
       })
@@ -275,7 +286,7 @@ export default {
         method:'post',
         url:'http://150.158.171.212:8080/updatescore',//这里需要修改接口
         data:{	//按照对象的格式去组织data，key-value形式
-          "tno":this.formInline[index].tno,
+          "tno":this.tableData[index].tno,
           "title":newstitle
         },
       }).then(response => { //这里的response是通过get方法请求得到的内容
@@ -308,7 +319,7 @@ export default {
         method:'post',
         url:'http://150.158.171.212:8080/updatescore',//这里需要修改接口
         data:{	//按照对象的格式去组织data，key-value形式
-          "tno":this.formInline[index].tno,
+          "tno":this.tableData[index].tno,
           "root":newroot
         },
       }).then(response => { //这里的response是通过get方法请求得到的内容
@@ -318,11 +329,13 @@ export default {
     addTeacher(){
       this.$axios({//添加新入职教师的基本信息,不需要返回任何信息
         method:'post',
-        url:'http://150.158.171.212:8080/updatescore',
+        url:'http://150.158.171.212:8080/addteacher',
         data:{	//tno, tname, title,hireDate,root
           "tno":this.formInline.tno,
           "tname":this.formInline.tname,
           "title":this.formInline.title,
+          "tsex":this.formInline.tsex,
+          "pass":this.formInline.pass,
           "hireDate":this.formInline.hireDate,
           "root":this.formInline.root,
         },
