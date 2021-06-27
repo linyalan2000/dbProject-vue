@@ -170,7 +170,16 @@ export default {
 
     }
   },
-  mounted(){},
+  mounted(){//加载所有学生的所有选课记录
+    this.$axios({
+      method:'get',
+      url:'http://150.158.171.212:8080/gettea?tno=',//这里要修改
+    }).then(response => { //sno sname cno  cname tname score term
+      console.log("加载所有学生的所有选课记录");
+      console.log(response.data);//需要返回的参数为sno sname cno  cname tname score term
+      //this.tableData = response.data;
+    })
+  },
   methods: {
     logout(){
       console.log("logout!");
@@ -257,7 +266,6 @@ export default {
       this.multipleSelection = val;
       console.log(this.multipleSelection) //记录了所有选中的记录
     }
-
   }
 }
 </script>

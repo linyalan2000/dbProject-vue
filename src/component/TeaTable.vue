@@ -29,14 +29,14 @@
     <el-row class="span-row"></el-row>
     <el-row>
       <el-form :inline="true" :model="formInline" class="select-form">
-        <el-form-item label="教工号：">
-          <el-input v-model="formInline.tno" ></el-input>
+        <el-form-item label="教工号：" >
+          <el-input v-model="formInline.tno" placeholder="5位数字"></el-input>
         </el-form-item>
         <el-form-item label="姓名：">
           <el-input v-model="formInline.tname" ></el-input>
         </el-form-item>
-        <el-form-item label="职称：">
-          <el-input v-model="formInline.title" ></el-input>
+        <el-form-item label="职称：" >
+          <el-input v-model="formInline.title" placeholder="讲师/助理教授/副教授/教授"></el-input>
         </el-form-item>
         <el-form-item label="性别：">
           <el-input v-model="formInline.tsex" ></el-input>
@@ -251,7 +251,7 @@ export default {
         }
       })
     },
-    deleteRow(index, rows) {//删除教师的信息,从教师表中删除即可
+    deleteRow(index, rows) {//删除教师的信息,从教师表和选课表中删除该教师相关的基本信息
       this.$axios({
         method:'get',
         url:'http://150.158.171.212:8080/getscore?tno=' + this.tableData[index].tno,//这里需要修改
@@ -261,7 +261,7 @@ export default {
       rows.splice(index, 1);
     },
     updatetitle(index, rows) {//修改教师职称
-      var newstitle;
+      var newtitle;
       this.$prompt('请输入此教师的新职称', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -270,7 +270,7 @@ export default {
       }).then(({ value }) => {
         console.log("修改后的职称为：");
         console.log(value);
-        newstitle=value;
+        newtitle=value;
         this.$message({
           type: 'success',
           message: '新的职称: ' + value,
@@ -284,10 +284,11 @@ export default {
 
       this.$axios({//后端在教师表中更新
         method:'post',
-        url:'http://150.158.171.212:8080/updatescore',//这里需要修改接口
+        url:'http://150.158.171.212:8080/updateteacher',//这里需要修改接口
         data:{	//按照对象的格式去组织data，key-value形式
           "tno":this.tableData[index].tno,
-          "title":newstitle
+          "title":newtitle,
+          "root":this.tableData[index].root
         },
       }).then(response => { //这里的response是通过get方法请求得到的内容
         console.log(response.data);
@@ -303,7 +304,19 @@ export default {
       }).then(({ value }) => {
         console.log("修改后的权限为：");
         console.log(value);
-        newroot=value;
+        newroot=value;//点击确定以后
+        console.log(this.tableData[index].tno)
+        this.$axios({//后端在教师表中更新
+          method:'post',
+          url:'http://150.158.171.212:8080/updateteacher',//这里需要修改接口
+          data:{	//按照对象的格式去组织data，key-value形式
+            "tno":this.tableData[index].tno,
+            "title":this.tableData[index].title,
+            "root":newroot
+          },
+        }).then(response => { //这里的response是通过get方法请求得到的内容
+          console.log(response.data);
+        })
         this.$message({
           type: 'success',
           message: '新的权限: ' + value,
@@ -315,44 +328,45 @@ export default {
         });
       });
 
-      this.$axios({//后端在教师表中更新
-        method:'post',
-        url:'http://150.158.171.212:8080/updatescore',//这里需要修改接口
-        data:{	//按照对象的格式去组织data，key-value形式
-          "tno":this.tableData[index].tno,
-          "root":newroot
-        },
-      }).then(response => { //这里的response是通过get方法请求得到的内容
-        console.log(response.data);
-      })
+
     },
     addTeacher(){
-      this.$axios({//添加新入职教师的基本信息,不需要返回任何信息
-        method:'post',
-        url:'http://150.158.171.212:8080/addteacher',
-        data:{	//tno, tname, title,hireDate,root
-          "tno":this.formInline.tno,
-          "tname":this.formInline.tname,
-          "title":this.formInline.title,
-          "tsex":this.formInline.tsex,
-          "pass":this.formInline.pass,
-          "hireDate":this.formInline.hireDate,
-          "root":this.formInline.root,
-        },
-      }).then(response => { //这里的response是通过get方法请求得到的内容
-        console.log("添加教师的成绩不需要返回任何信息");
-        console.log(response.data);
-        if(response.data == 1){
-          //录入成功
-          this.$message('添加成功');
-          this.formInline.sid='';
-          this.formInline.score='';
-        }
-        else{
-          //录入失败
-          this.$message('添加失败');
-          this.formInline.sid='';
-          this.formInline.score='';
+      this.$axios({//输入教工号 ,可查询出对应的教师信息
+        method:'get',
+        url:'http://150.158.171.212:8080/gettea?tno=' + this.formInline.tno,
+      }).then(response => { //返回tno, tname, title,hireDate,root
+        console.log(response.data) //在控制台中打印其data部分内容
+        var res = response.data;//tno, tname, title,hireDate,root
+        if (res.length != 0) {
+          this.$message('已存在该教师信息');
+        } else {
+          this.$axios({//添加新入职教师的基本信息,不需要返回任何信息
+            method: 'post',
+            url: 'http://150.158.171.212:8080/addteacher',
+            data: {	//tno, tname, title,hireDate,root
+              "tno": this.formInline.tno,
+              "tname": this.formInline.tname,
+              "title": this.formInline.title,
+              "tsex": this.formInline.tsex,
+              "pass": this.formInline.pass,
+              "hireDate": this.formInline.hireDate,
+              "root": this.formInline.root,
+            },
+          }).then(response => { //这里的response是通过get方法请求得到的内容
+            console.log("添加教师的成绩不需要返回任何信息");
+            console.log(response);
+            if (response != null && response.data == 1) {
+              //录入成功
+              this.$message('添加成功');
+              this.formInline.sid = '';
+              this.formInline.score = '';
+            } else {
+              //录入失败
+              this.$message('添加失败');
+              this.formInline.sid = '';
+              this.formInline.score = '';
+            }
+          })
         }
       })
     },
