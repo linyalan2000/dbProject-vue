@@ -117,10 +117,10 @@
             width="120">
           <template slot-scope="scope">
             <el-button
-                @click.native.prevent="updateRow(scope.$index, tableData)"
+                @click.native.prevent="updateTeacher(scope.$index, tableData)"
                 type="text"
                 size="small">
-              修改
+              修改主讲教师
             </el-button>
           </template>
         </el-table-column>
@@ -202,7 +202,14 @@ export default {
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
     },
-    deleteRow(index, rows) {
+    deleteRow(index, rows) {//从授课表中删除记录？？？
+      this.$axios({
+        method:'get',
+        url:'http://150.158.171.212:8080/getscore?tno=' + this.tableData[index].tno
+        +'&cno='+this.tableData[index].cno,//这里需要修改
+      }).then(response => { //这里的response是通过get方法请求得到的内容
+        console.log(response.data);
+      })
       rows.splice(index, 1);
     },
     queryCourse(){//查询课程信息
@@ -214,6 +221,7 @@ export default {
         var res = response.data;//返回cno cname academy tname term
         if (res != null){
           this.tableData = res
+          this.$message('查询课程信息成功！');//这里好像有点问题
         }
         else{
           this.$alert('查询相应信息失败', {
@@ -228,8 +236,52 @@ export default {
         }
       })
     },
+    updateTeacher(index, rows){
+      var newteacher;
+      this.$prompt('请输入此课程新的主讲教师(教师编号)', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        // inputPattern:/^\d{0,2}$/,
+        // inputErrorMessage: '成绩格式不正确'
+      }).then(({ value }) => {
+        console.log("修改后的主讲教师为：");
+        console.log(value);
+        newteacher=value;
+        this.$axios({//后端在授课表中更新
+          method:'post',
+          url:'http://150.158.171.212:8080/updateteacher',//这里需要修改接口
+          data:{	//按照对象的格式去组织data，key-value形式
+            "cno":this.tableData[index].cno.toString(),
+            "tno":newteacher,
+          },
+        }).then(response => { //这里的response是通过get方法请求得到的内容
+          console.log(response.data);
+        })
+        this.$message({
+          type: 'success',
+          message: '新的主讲教师编号: ' + value,
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消输入'
+        });
+      });
+    },
     addCourse(){//添加
-
+      this.$axios({//输入cno tno cname academy term
+        method:'get',
+        url:'http://150.158.171.212:8080/gettea?cno=' + this.formInline.cno+
+            '&tno='+this.formInline.tno+'&cname='+this.formInline.cname+'&academy'
+            +this.formInline.academy+'&term='+this.formInline.term,
+      }).then(response => { //不用返回任何信息，
+        console.log(response.data) //在控制台中打印其data部分内容
+        if (response.data == 1) {
+          this.$message('添加新的课程信息成功！');
+        } else {
+          this.$message('添加新的课程信息失败！');
+        }
+      })
     },
     toggleSelection(rows) {
       if (rows) {

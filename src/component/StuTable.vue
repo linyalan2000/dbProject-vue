@@ -284,7 +284,8 @@ export default {
         console.log(response.data) //在控制台中打印其data部分内容
         var res = response.data;//tno, tname, title,hireDate,root
         if (res != null){
-          this.tableData = res
+          this.tableData = res;
+          this.$message('查询学生选课信息成功！');
         }
         else{
           this.$alert('查询此学生选修此课程的相应信息失败', {
@@ -299,6 +300,20 @@ export default {
         }
       })
     },
+    addStudent(){//添加学生选了具体某门课的信息，在选课表中insert即可
+      this.$axios({//输入sno cno tno
+        method:'get',
+        url:'http://150.158.171.212:8080/gettea?sno=' + this.formInline.sno+
+            '&cno='+this.formInline.cno+'&tno='+this.formInline.tno,
+      }).then(response => { //不用返回任何信息，
+        console.log(response.data) //在控制台中打印其data部分内容
+        if (response.data == 1) {
+          this.$message('添加学生选课信息成功！');
+        } else {
+          this.$message('添加学生选课信息失败！');
+        }
+      })
+    },
     toggleSelection(rows) {
       if (rows) {
         rows.forEach(row => {
@@ -307,44 +322,6 @@ export default {
       } else {
         this.$refs.multipleTable.clearSelection();
       }
-    },
-    addStudent(){//添加学生选了具体某门课的信息，在选课表中insert即可
-      this.$axios({//输入sno cno tno
-        method:'get',
-        url:'http://150.158.171.212:8080/gettea?sno=' + this.formInline.sno+
-        '&cno='+this.formInline.cno+'&tno='+this.formInline.tno,
-      }).then(response => {
-        console.log(response.data) //在控制台中打印其data部分内容
-        var res = response.data;//返回sno  sname  cno cname  tname  score term
-          this.$axios({//添加新入职教师的基本信息,不需要返回任何信息
-            method: 'post',
-            url: 'http://150.158.171.212:8080/addteacher',
-            data: {	//tno, tname, title,hireDate,root
-              "tno": this.formInline.tno,
-              "tname": this.formInline.tname,
-              "title": this.formInline.title,
-              "tsex": this.formInline.tsex,
-              "pass": this.formInline.pass,
-              "hireDate": this.formInline.hireDate,
-              "root": this.formInline.root,
-            },
-          }).then(response => { //这里的response是通过get方法请求得到的内容
-            console.log("添加教师的成绩不需要返回任何信息");
-            console.log(response);
-            if (response != null && response.data == 1) {
-              //录入成功
-              this.$message('添加成功');
-              this.formInline.sid = '';
-              this.formInline.score = '';
-            } else {
-              //录入失败
-              this.$message('添加失败');
-              this.formInline.sid = '';
-              this.formInline.score = '';
-            }
-          })
-
-      })
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
