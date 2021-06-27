@@ -56,10 +56,11 @@
           <el-form-item label="联系方式：">
             <el-input v-model="formInline.tel" ></el-input>
           </el-form-item>
+          <el-button type="text" @click="updateTel" >修改电话</el-button>
           <el-form-item label="密码" >
             <el-input v-model="formInline.password" type="password"></el-input>
           </el-form-item>
-
+          <el-button type="text" @click="updatePwd" >修改密码</el-button>
         </el-form>
     </el-col>
 
@@ -92,6 +93,75 @@ export default {
       console.log("logout!");
       this.$router.push("/login")
     },
+    updateTel() {//更新教师自己手机号码
+      var newtel;
+      this.$prompt('请输入新的联系方式', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      }).then(({ value }) => {
+        newtel = value;
+        console.log("修改后的联系方式为：");
+        console.log(value);
+
+        this.$axios({//把新的联系方式传到后端
+          method:'post',
+          url:'http://150.158.171.212:8080/editpass',//这里需要修改
+          data:{	//按照对象的格式去组织data，key-value形式
+            "tno":this.Common.userId,
+            "tel":value,
+            "permissionId":this.Common.privilege
+          },
+        }).then(response => { //这里的response是通过get方法请求得到的内容
+          console.log(111111)
+          console.log(response.data);
+        })
+
+        this.$message({
+          type: 'success',
+          message: '联系方式修改成功！',
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消输入新联系方式'
+        });
+      });
+
+    },
+    updatePwd() {//更新教师自己的密码
+      var newpwd;
+      this.$prompt('请输入新的密码', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      }).then(({ value }) => {
+        newpwd = value;
+        console.log("修改后的密码为：");
+        console.log(value);
+
+        this.$axios({//把新的密码传到后端
+          method:'post',
+          url:'http://150.158.171.212:8080/editpass',
+          data:{	//按照对象的格式去组织data，key-value形式
+            "tno":this.Common.userId,
+            "pass":value,
+            "permissionId":this.Common.privilege
+          },
+        }).then(response => { //这里的response是通过get方法请求得到的内容
+          console.log(111111)
+          console.log(response.data);
+        })
+        this.$message({
+          type: 'success',
+          message: '密码修改成功！',
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消输入新密码'
+        });
+      });
+
+    }
 
   }
 }

@@ -220,11 +220,11 @@ export default {
     queryTeacher(){
       this.$axios({//输入教工号 or 教师名 or 职称,可查询出对应的教师信息
         method:'get',
-        url:'http://150.158.171.212:8080/getscore?tno=' + this.formInline.tno+
-            '&tname='+this.formInline.tname+'&title'+this.formInline.title,
+        url:'http://150.158.171.212:8080/gettea?tno=' + this.formInline.tno+
+            '&tname='+this.formInline.tname+'&title='+this.formInline.title,
       }).then(response => { //返回tno, tname, title,hireDate,root
         console.log(response.data) //在控制台中打印其data部分内容
-        var res = response.data;//
+        var res = response.data;//tno, tname, title,hireDate,root
         if (res != null){
           this.tableData = res
         }
@@ -241,7 +241,13 @@ export default {
         }
       })
     },
-    deleteRow(index, rows) {
+    deleteRow(index, rows) {//删除教师的信息,从教师表中删除即可
+      this.$axios({
+        method:'get',
+        url:'http://150.158.171.212:8080/getscore?tno=' + this.formInline.tno,//这里需要修改
+      }).then(response => { //这里的response是通过get方法请求得到的内容
+        console.log(response.data);
+      })
       rows.splice(index, 1);
     },
     updatetitle(index, rows) {//修改教师职称
@@ -270,7 +276,7 @@ export default {
         method:'post',
         url:'http://150.158.171.212:8080/updatescore',//这里需要修改接口
         data:{	//按照对象的格式去组织data，key-value形式
-          "tno":this.formInline[index].tid,
+          "tno":this.formInline[index].tno,
           "title":newstitle
         },
       }).then(response => { //这里的response是通过get方法请求得到的内容
@@ -303,7 +309,7 @@ export default {
         method:'post',
         url:'http://150.158.171.212:8080/updatescore',//这里需要修改接口
         data:{	//按照对象的格式去组织data，key-value形式
-          "tno":this.formInline[index].tid,
+          "tno":this.formInline[index].tno,
           "root":newroot
         },
       }).then(response => { //这里的response是通过get方法请求得到的内容
@@ -311,16 +317,18 @@ export default {
       })
     },
     addTeacher(){
-      this.$axios({//添加学生成绩信息,不需要返回任何信息
+      this.$axios({//添加新入职教师的基本信息,不需要返回任何信息
         method:'post',
         url:'http://150.158.171.212:8080/updatescore',
-        data:{	//按照对象的格式去组织data，key-value形式
-          "cno":this.Common.courseId,
-          "sno":this.formInline.sid,
-          "score":this.formInline.score,
+        data:{	//tno, tname, title,hireDate,root
+          "tno":this.formInline.tno,
+          "tname":this.formInline.tname,
+          "title":this.formInline.title,
+          "hireDate":this.formInline.hireDate,
+          "root":this.formInline.root,
         },
       }).then(response => { //这里的response是通过get方法请求得到的内容
-        console.log("添加学生的成绩不需要返回任何信息");
+        console.log("添加教师的成绩不需要返回任何信息");
         console.log(response.data);
         if(response.data == 1){
           //录入成功
