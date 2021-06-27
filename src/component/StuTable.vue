@@ -32,12 +32,6 @@
         <el-form-item label="学号：">
           <el-input v-model="formInline.sid" ></el-input>
         </el-form-item>
-        <el-form-item label="姓名：">
-          <el-input v-model="formInline.sname" ></el-input>
-        </el-form-item>
-        <el-form-item label="班级：">
-          <el-input v-model="formInline.class" ></el-input>
-        </el-form-item>
         <el-form-item label="课程号：">
           <el-input v-model="formInline.cid" ></el-input>
         </el-form-item>

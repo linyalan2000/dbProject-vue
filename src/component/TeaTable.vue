@@ -218,10 +218,9 @@ export default {
       console.log(key, keyPath);
     },
     queryTeacher(){
-      this.$axios({//输入教工号 or 教师名 or 职称,可查询出对应的教师信息
+      this.$axios({//输入教工号 ,可查询出对应的教师信息
         method:'get',
-        url:'http://150.158.171.212:8080/gettea?tno=' + this.formInline.tno+
-            '&tname='+this.formInline.tname+'&title='+this.formInline.title,
+        url:'http://150.158.171.212:8080/gettea?tno=' + this.formInline.tno,
       }).then(response => { //返回tno, tname, title,hireDate,root
         console.log(response.data) //在控制台中打印其data部分内容
         var res = response.data;//tno, tname, title,hireDate,root
@@ -332,13 +331,13 @@ export default {
         console.log(response.data);
         if(response.data == 1){
           //录入成功
-          this.$message('录入成功');
+          this.$message('添加成功');
           this.formInline.sid='';
           this.formInline.score='';
         }
         else{
           //录入失败
-          this.$message('录入失败');
+          this.$message('添加失败');
           this.formInline.sid='';
           this.formInline.score='';
         }
