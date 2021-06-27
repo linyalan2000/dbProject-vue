@@ -240,6 +240,19 @@ export default {
         console.log("修改后的成绩为：");
         console.log(value);
         newscore=value;
+
+        this.$axios({//添加学生成绩信息,不需要返回任何信息
+          method:'post',
+          url:'http://150.158.171.212:8080/updatescore',
+          data:{	//按照对象的格式去组织data，key-value形式
+            "cno":this.Common.courseId,
+            "sno":this.tableData[index].sid,
+            "score":newscore
+          },
+        }).then(response => { //这里的response是通过get方法请求得到的内容
+          console.log(response.data);
+        })
+
         this.$message({
           type: 'success',
           message: '新的成绩: ' + value,
@@ -251,29 +264,7 @@ export default {
         });
       });
 
-      this.$axios({//添加学生成绩信息,不需要返回任何信息
-        method:'post',
-        url:'http://150.158.171.212:8080/updatescore',
-        data:{	//按照对象的格式去组织data，key-value形式
-          "cno":this.Common.courseId,
-          "sno":this.tableData[index].sid,
-          "score":newscore
-        },
-      }).then(response => { //这里的response是通过get方法请求得到的内容
-        console.log(response.data);
-        // if(response.data == 1){
-        //   //录入成功
-        //   this.$message('录入成功');
-        //   this.formInline.sid='';
-        //   this.formInline.score='';
-        // }
-        // else{
-        //   //录入失败
-        //   this.$message('录入失败');
-        //   this.formInline.sid='';
-        //   this.formInline.score='';
-        // }
-      })
+
     },
     toggleSelection(rows) {
       if (rows) {

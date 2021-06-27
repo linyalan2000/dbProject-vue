@@ -38,6 +38,20 @@
         <el-form-item>
           <el-button type="primary" @click="queryStudent">查询</el-button>
         </el-form-item>
+<!--        <el-form-item>-->
+<!--          <el-button type="primary" @click="batchDelete">批量删除</el-button>-->
+<!--        </el-form-item>-->
+        <el-popover
+            placement="top"
+            width="160"
+            v-model="visible">
+          <p>确定删除这些记录内容吗？</p>
+          <div style="text-align: right; margin: 0">
+            <el-button size="mini" type="text" @click="visible = false">取消</el-button>
+            <el-button type="primary" size="mini" @click="batchDelete();visible = false" >确定</el-button>
+          </div>
+          <el-button slot="reference">批量删除</el-button>
+        </el-popover>
       </el-form>
       <el-row class="span-row"></el-row>
       <el-table
@@ -133,7 +147,8 @@ export default {
   name: "StuTable",
   data(){
     return{
-      tableData: [{
+      visible: false,
+      tableData: [{//这里面添加了tno，但是并不在表单上显示，只是传递给后端做查询
         sno: '95002',
         sname: '张三',
         cno:'009',
@@ -173,11 +188,11 @@ export default {
   mounted(){//加载所有学生的所有选课记录
     this.$axios({
       method:'get',
-      url:'http://150.158.171.212:8080/gettea?tno=',//这里要修改
+      url:'http://150.158.171.212:8080/getadminscore?cno=&sno=',//这里要修改
     }).then(response => { //sno sname cno  cname tname score term
       console.log("加载所有学生的所有选课记录");
       console.log(response.data);//需要返回的参数为sno sname cno  cname tname score term
-      //this.tableData = response.data;
+      this.tableData = response.data;//这里应该放出来
     })
   },
   methods: {
@@ -188,12 +203,35 @@ export default {
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
     },
-    deleteRow(index, rows) {
-      this.$axios({
-        method:'get',
-        url:'http://150.158.171.212:8080/getscore?sno=' + this.tableData[index].tno,//这里需要修改
+    batchDelete(){
+      this.$axios({//向后端传数据：cno,sno,tno
+        method:'post',
+        url:'http://150.158.171.212:8080/deleteadminscore',
+        data:{
+          "sno":this.formInline.sno.toString(),
+          "cno":this.formInline.cno.toString()
+        }
       }).then(response => { //这里的response是通过get方法请求得到的内容
         console.log(response.data);
+        this.formInline.sno ='';
+        this.formInline.cno ='';
+      })
+
+
+    },
+    deleteRow(index, rows) {//删除选课表中的某条记录
+      this.$axios({//向后端传数据：cno,sno,tno
+        method:'post',
+        url:'http://150.158.171.212:8080/deleteadminscore',
+        data:{
+          "sno":this.tableData[index].sno.toString(),
+          "cno":this.tableData[index].cno.toString()
+        }
+
+      }).then(response => { //这里的response是通过get方法请求得到的内容
+        console.log(response.data);
+        this.formInline.sno ='';
+        this.formInline.cno ='';
       })
       rows.splice(index, 1);
     },
@@ -208,6 +246,18 @@ export default {
         console.log("修改后的成绩为：");
         console.log(value);
         newscore=value;
+        this.$axios({//传给后端sno, cno, newscore, 后端在选课表中更新
+          method:'post',
+          url:'http://150.158.171.212:8080/updateadminscore',//这里需要修改接口
+          data:{	//按照对象的格式去组织data，key-value形式
+            "sno":this.tableData[index].sno.toString(),
+            "cno":this.tableData[index].cno.toString(),
+            "newscore":newscore,
+          },
+        }).then(response => { //不需要返回任何信息
+          console.log(response.data);
+        })
+
         this.$message({
           type: 'success',
           message: '新的成绩: ' + value,
@@ -218,22 +268,11 @@ export default {
           message: '取消输入'
         });
       });
-      this.$axios({//传给后端sno, cno, newscore, 后端在选课表中更新
-        method:'post',
-        url:'http://150.158.171.212:8080/updatescore',//这里需要修改接口
-        data:{	//按照对象的格式去组织data，key-value形式
-          "sno":this.tableData[index].sno,
-          "cno":this.tableData[index].cno,
-          "newscore":newscore
-        },
-      }).then(response => { //不需要返回任何信息
-        console.log(response.data);
-      })
     },
     queryStudent(){//输入学号和课程号 ,可查询出对应的学生信息
       this.$axios({
         method:'get',
-        url:'http://150.158.171.212:8080/gettea?sno=' + this.formInline.sno+"&cno="+this.formInline.cno,
+        url:'http://150.158.171.212:8080/getadminscore?sno=' + this.formInline.sno+"&cno="+this.formInline.cno,
       }).then(response => { //返回tno, tname, title,hireDate,root
         console.log(response.data) //在控制台中打印其data部分内容
         var res = response.data;//tno, tname, title,hireDate,root
