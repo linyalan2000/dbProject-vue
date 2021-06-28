@@ -39,10 +39,10 @@
           <el-input v-model="formInline.tno" style="width:140px"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="queryStudent">查询</el-button>
+          <el-button type="primary" @click="querySC">查询</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="addStudent">添加学生</el-button>
+          <el-button type="primary" @click="addSC">添加学生选课信息</el-button>
         </el-form-item>
 <!--        <el-form-item>-->
 <!--          <el-button type="primary" @click="batchDelete">批量删除</el-button>-->
@@ -58,6 +58,32 @@
           </div>
           <el-button slot="reference">批量删除</el-button>
         </el-popover>
+      </el-form>
+      <el-form :inline="true" :model="formInline1" class="select-form">
+        <el-form-item label="学号：">
+          <el-input v-model="formInline1.sno" style="width:100px"></el-input>
+        </el-form-item>
+        <el-form-item label="姓名：" >
+          <el-input v-model="formInline1.sname" style="width:100px"></el-input>
+        </el-form-item>
+        <el-form-item label="性别：">
+          <el-input v-model="formInline1.ssex" style="width:50px"></el-input>
+        </el-form-item>
+        <el-form-item label="专业：">
+          <el-input v-model="formInline1.major" style="width:90px"></el-input>
+        </el-form-item>
+        <el-form-item label="入学时间：">
+          <el-input v-model="formInline1.inyear" style="width:90px"></el-input>
+        </el-form-item>
+        <el-form-item label="初始密码：">
+          <el-input v-model="formInline1.pass" style="width:90px" type="password"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="addStudent">添加新学生</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="deleteStudent">删除</el-button>
+        </el-form-item>
       </el-form>
       <el-row class="span-row"></el-row>
       <el-table
@@ -188,6 +214,14 @@ export default {
         cno:'',
         tno:''
       },
+      formInline1:{
+        sno:'',
+        sname:'',
+        ssex:'',
+        inyear:'',
+        pass:'123456',
+        major:''
+      },
       multipleSelection:0
 
     }
@@ -226,6 +260,40 @@ export default {
       })
 
 
+    },
+    addStudent(){//在学生表中添加新的学生信息
+      this.$axios({//输入sno sname ssex inyear pass major
+        method:'post',
+        url:'http://150.158.171.212:8080/addadminscore',
+        data:{
+          "sno": this.formInline1.sno,
+          "sname": this.formInline1.sname,
+          "ssex": this.formInline1.ssex,
+          "inyear":this.formInline1.inyear,
+          "pass":this.formInline1.pass,
+          "major":this.formInline1.major
+        }
+      }).then(response => { //不用返回任何信息，
+        console.log(response.data) //在控制台中打印其data部分内容
+        if (response.data == 1) {
+          this.$message('添加学生信息成功！');
+        } else {
+          this.$message('添加学生信息失败！');
+        }
+      })
+    },
+    deleteStudent(){//从学生表中删除此学生，并从选课表中删除相关记录
+      this.$axios({//输入sno
+        method:'get',
+        url:'http://150.158.171.212:8080/addadminscore?sno='+this.formInline1.sno,
+      }).then(response => { //不用返回任何信息，
+        console.log(response.data) //在控制台中打印其data部分内容
+        if (response.data == 1) {
+          this.$message('删除学生信息成功！');
+        } else {
+          this.$message('删除学生信息失败！');
+        }
+      })
     },
     deleteRow(index, rows) {//删除选课表中的某条记录
       this.$axios({//向后端传数据：cno,sno,tno
@@ -277,7 +345,7 @@ export default {
         });
       });
     },
-    queryStudent(){//输入学号和课程号 ,可查询出对应的学生信息
+    querySC(){//输入学号和课程号 ,可查询出对应的学生信息
       this.$axios({
         method:'get',
         url:'http://150.158.171.212:8080/getadminscore?sno=' + this.formInline.sno+"&cno="+this.formInline.cno,
@@ -301,7 +369,7 @@ export default {
         }
       })
     },
-    addStudent(){//添加学生选了具体某门课的信息，在选课表中insert即可
+    addSC(){//添加学生选了具体某门课的信息，在选课表中insert即可
       this.$axios({//输入sno cno tno
         method:'post',
         url:'http://150.158.171.212:8080/addadminscore',

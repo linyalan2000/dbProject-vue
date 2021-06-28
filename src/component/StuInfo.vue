@@ -44,9 +44,9 @@
           <el-form-item label="性别：">
             <el-input v-model="formInline.sex" ></el-input>
           </el-form-item>
-          <el-form-item label="班级：">
-            <el-input v-model="formInline.class" ></el-input>
-          </el-form-item>
+<!--          <el-form-item label="班级：">-->
+<!--            <el-input v-model="formInline.class" ></el-input>-->
+<!--          </el-form-item>-->
           <el-form-item label="入学时间：">
             <el-input v-model="formInline.DateOfCome" ></el-input>
           </el-form-item>
