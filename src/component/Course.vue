@@ -27,8 +27,6 @@
       </el-col>
     </el-row>
 
-
-
     <el-row class="span-row"></el-row>
     <el-row>
       <el-form :inline="true" :model="formInline" class="select-form">
@@ -117,11 +115,13 @@
             width="120">
           <template slot-scope="scope">
             <el-button
+                    @click="dialogFormVisible = true"
                 @click.native.prevent="updateTeacher(scope.$index, tableData)"
                 type="text"
                 size="small">
               修改主讲教师
             </el-button>
+
           </template>
         </el-table-column>
 
@@ -130,7 +130,9 @@
     <el-row>
 
     </el-row>
+
   </el-col>
+
 </template>
 
 <script>
@@ -138,6 +140,9 @@ export default {
   name: "Course",
   data(){
     return{
+
+      formLabelWidth: '120px',
+      dialogFormVisible: false,
       tableData: [{
         cno:'01',
         cname: '操作系统',
@@ -187,11 +192,11 @@ export default {
   mounted(){//加载所有的课程信息
     this.$axios({
       method:'get',
-      url:'http://150.158.171.212:8080/getadminscore?cno=&sno=',//这里要修改
+      url:'http://150.158.171.212:8080/getadmincourse?cno=&tno=',//这里要修改
     }).then(response => { //sno sname cno  cname tname score term
       console.log("加载所有课程信息（包括对应的老师）");
       console.log(response.data);//需要返回的参数为cno cname academy tname maxnum term
-      //this.tableData = response.data;//这里应该放出来
+      this.tableData = response.data;//这里应该放出来
     })
   },
   methods: {

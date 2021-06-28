@@ -28,8 +28,8 @@
     </el-row>
 
     <el-row class="span-row"></el-row>
-    <el-row>
-      <el-form :inline="true" :model="formInline" class="select-form">
+    <el-row style="position: center">
+      <el-form :inline="true" :model="formInline" class="select-form" style="position: center">
         <el-form-item label="课程号：">
           <el-input v-model="formInline.cid" ></el-input>
         </el-form-item>
