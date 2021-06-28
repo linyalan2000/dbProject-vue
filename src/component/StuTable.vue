@@ -59,40 +59,7 @@
           <el-button slot="reference">批量删除</el-button>
         </el-popover>
       </el-form>
-      <el-form>
-        <el-form-item>
-         -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        </el-form-item>
-      </el-form>
-      <el-form :inline="true" :model="formInline1" class="select-form">
-        <el-form-item label="学号：">
-          <el-input v-model="formInline1.sno" style="width:100px" size="small"></el-input>
-        </el-form-item>
-        <el-form-item label="姓名：" >
-          <el-input v-model="formInline1.sname" style="width:100px" size="small"></el-input>
-        </el-form-item>
-        <el-form-item label="性别：">
-          <el-input v-model="formInline1.ssex" style="width:50px" size="small"></el-input>
-        </el-form-item>
-        <el-form-item label="专业：">
-          <el-input v-model="formInline1.major" style="width:90px" size="small"></el-input>
-        </el-form-item>
-        <el-form-item label="入学时间：">
-          <el-input v-model="formInline1.inyear" style="width:90px" size="small"></el-input>
-        </el-form-item>
-        <el-form-item label="初始密码：">
-          <el-input v-model="formInline1.pass" style="width:90px" type="password" size="small"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-form-item label="联系方式：">
-            <el-input v-model="formInline1.tel" style="width:90px" size="small"></el-input>
-          </el-form-item>
-          <el-button type="primary" @click="addStudent" size="small">添加新学生</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="deleteStudent" size="small">删除</el-button>
-        </el-form-item>
-      </el-form>
+
       <el-row class="span-row"></el-row>
       <el-table
           :data="tableData"
