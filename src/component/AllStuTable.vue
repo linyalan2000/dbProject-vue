@@ -27,43 +27,31 @@
       </el-col>
     </el-row>
     <el-row class="span-row"></el-row>
+
+    <el-dialog  :visible.sync="dialogFormVisible">
+      <el-form :model="form">
+        <el-form-item label="姓名" :label-width="formLabelWidth">
+          <el-input v-model="form.sname" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="性别" :label-width="formLabelWidth">
+          <el-input v-model="form.sex" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="专业" :label-width="formLabelWidth">
+          <el-input v-model="form.major" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="入学时间" :label-width="formLabelWidth">
+          <el-input v-model="form.inyear" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="联系电话" :label-width="formLabelWidth">
+          <el-input v-model="form.telphone" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="updateStu">确 定</el-button>
+      </div>
+    </el-dialog>
     <el-row>
-      <el-form :inline="true" :model="formInline" class="select-form">
-        <el-form-item label="学号：">
-          <el-input v-model="formInline.sno" style="width:140px" size="small"></el-input>
-        </el-form-item>
-        <el-form-item label="课程号：" >
-          <el-input v-model="formInline.cno" style="width:140px" size="small"></el-input>
-        </el-form-item>
-        <el-form-item label="授课教师(编号)：">
-          <el-input v-model="formInline.tno" style="width:140px" size="small"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="querySC" size="small">查询</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="addSC" size="small">添加学生选课信息</el-button>
-        </el-form-item>
-<!--        <el-form-item>-->
-<!--          <el-button type="primary" @click="batchDelete">批量删除</el-button>-->
-<!--        </el-form-item>-->
-        <el-popover
-            placement="top"
-            width="160"
-            v-model="visible">
-          <p>确定删除这些记录内容吗？</p>
-          <div style="text-align: right; margin: 0">
-            <el-button size="mini" type="text" @click="visible = false">取消</el-button>
-            <el-button type="primary" size="mini" @click="batchDelete()" visible = false" >确定</el-button>
-          </div>
-          <el-button slot="reference">批量删除</el-button>
-        </el-popover>
-      </el-form>
-      <el-form>
-        <el-form-item>
-         -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        </el-form-item>
-      </el-form>
       <el-form :inline="true" :model="formInline1" class="select-form">
         <el-form-item label="学号：">
           <el-input v-model="formInline1.sno" style="width:100px" size="small"></el-input>
@@ -90,7 +78,7 @@
           <el-button type="primary" @click="addStudent" size="small">添加新学生</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="deleteStudent" size="small">删除</el-button>
+          <el-button type="primary" @click="selectStudent" size="small">查询</el-button>
         </el-form-item>
       </el-form>
       <el-row class="span-row"></el-row>
@@ -117,32 +105,26 @@
             width="120">
         </el-table-column>
         <el-table-column
-            prop="cno"
-            label="课程号"
+            prop="sex"
+            label="性别"
             header-align="center"
             width="120">
         </el-table-column>
         <el-table-column
-            prop="cname"
-            label="课程"
+            prop="major"
+            label="专业"
             header-align="center"
             width="120">
         </el-table-column>
         <el-table-column
-            prop="tname"
-            label="主讲老师"
-            header-align="center"
-            width="120">
+                prop="inyear"
+                label="入学时间"
+                header-align="center"
+                width="120">
         </el-table-column>
         <el-table-column
-            prop="score"
-            label="成绩"
-            header-align="center"
-            width="200">
-        </el-table-column>
-        <el-table-column
-            prop="term"
-            label="学期"
+            prop="telphone"
+            label="联系电话"
             header-align="center"
             width="120">
         </el-table-column>
@@ -168,6 +150,7 @@
           <template slot-scope="scope">
             <el-button
                 @click.native.prevent="updateScore(scope.$index, tableData)"
+                @click="dialogFormVisible = true"
                 type="text"
                 size="small">
               修改
@@ -184,9 +167,19 @@
 
 <script>
 export default {
-  name: "StuTable",
+  name: "AllStuTable",
   data(){
     return{
+      form: {
+        sno: '',
+        sname: '',
+        sex: '',
+        inyear: '',
+        tel: '',
+        major: ''
+      },
+      formLabelWidth: '100px',
+      dialogFormVisible: false,
       visible: false,
       tableData: [{//这里面添加了tno，但是并不在表单上显示，只是传递给后端做查询
         sno: '95002',
@@ -231,14 +224,15 @@ export default {
         tel:'',
         major:''
       },
-      multipleSelection:0
+      multipleSelection:0,
+      indexNum:0,
 
     }
   },
   mounted(){//加载所有学生的所有选课记录
     this.$axios({
       method:'get',
-      url:'http://150.158.171.212:8080/getadminscore?cno=&sno=',//这里要修改
+      url:'http://150.158.171.212:8080/stuinfo?id=',//这里要修改
     }).then(response => { //sno sname cno  cname tname score term
       console.log("加载所有学生的所有选课记录");
       console.log(response.data);//需要返回的参数为sno sname cno  cname tname score term
@@ -247,156 +241,149 @@ export default {
     })
   },
   methods: {
-    logout(){
+    query(){
+      this.$axios({
+        method:'get',
+        url:'http://150.158.171.212:8080/stuinfo?id=',//这里要修改
+      }).then(response => { //sno sname cno  cname tname score term
+        console.log("加载所有学生的所有选课记录");
+        console.log(response.data);//需要返回的参数为sno sname cno  cname tname score term
+        this.tableData = response.data;//这里应该放出来
+
+      })
+    },
+    logout() {
       console.log("logout!");
       this.$router.push("/login")
     },
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
     },
-    batchDelete(){
+    batchDelete() {
       this.$axios({//向后端传数据：cno,sno,tno
-        method:'post',
-        url:'http://150.158.171.212:8080/deleteadminscore',
-        data:{
-          "sno":this.formInline.sno.toString(),
-          "cno":this.formInline.cno.toString()
+        method: 'post',
+        url: 'http://150.158.171.212:8080/deleteadminscore',
+        data: {
+          "sno": this.formInline.sno.toString(),
+          "cno": this.formInline.cno.toString()
         }
       }).then(response => { //这里的response是通过get方法请求得到的内容
         console.log(response.data);
-        this.formInline.sno ='';
-        this.formInline.cno ='';
+        this.formInline.sno = '';
+        this.formInline.cno = '';
       })
 
 
     },
-    addStudent(){//在学生表中添加新的学生信息
+    addStudent() {//在学生表中添加新的学生信息
       this.$axios({//输入sno sname ssex inyear pass major
-        method:'post',
-        url:'http://150.158.171.212:8080/addstu',
-        data:{
+        method: 'post',
+        url: 'http://150.158.171.212:8080/addstu',
+        data: {
           "sno": this.formInline1.sno,
           "sname": this.formInline1.sname,
           "sex": this.formInline1.ssex,
-          "inyear":this.formInline1.inyear,
+          "inyear": this.formInline1.inyear,
+          "major": this.formInline1.major,
+          "tel": this.formInline1.tel,
           "pass":this.formInline1.pass,
-          "major":this.formInline1.major,
-          "tel":this.formInline1.tel
         }
       }).then(response => { //不用返回任何信息，
         console.log(response.data) //在控制台中打印其data部分内容
         if (response.data == 1) {
           this.$message('添加学生信息成功！');
+          this.formInline1 = []
+          this.query()
         } else {
           this.$message('添加学生信息失败！');
         }
       })
     },
-    deleteStudent(){//从学生表中删除此学生，并从选课表中删除相关记录
+    selectStudent() {//从学生表中删除此学生，并从选课表中删除相关记录
       this.$axios({//输入sno
-        method:'post',
-        url:'http://150.158.171.212:8080/delstu',
-        data:{
-          "sno": this.formInline1.sno
-        }
+        method: 'get',
+        url: 'http://150.158.171.212:8080/stuinfo?id=' + this.formInline1.sno,
       }).then(response => { //不用返回任何信息，
         console.log(response.data) //在控制台中打印其data部分内容
-        if (response.data == 1) {
-          this.$message('删除学生信息成功！');
-        } else {
-          this.$message('删除学生信息失败！');
-        }
+        this.tableData = response.data
       })
     },
     deleteRow(index, rows) {//删除选课表中的某条记录
       this.$axios({//向后端传数据：cno,sno,tno
-        method:'post',
-        url:'http://150.158.171.212:8080/deleteadminscore',
-        data:{
-          "sno":this.tableData[index].sno.toString(),
-          "cno":this.tableData[index].cno.toString()
+        method: 'post',
+        url: 'http://150.158.171.212:8080/delstu',
+        data: {
+          "sno": this.tableData[index].sno.toString(),
         }
 
       }).then(response => { //这里的response是通过get方法请求得到的内容
         console.log(response.data);
-        this.formInline.sno ='';
-        this.formInline.cno ='';
+        this.formInline.sno = '';
+        this.formInline.cno = '';
       })
       rows.splice(index, 1);
     },
     updateScore(index, rows) {//更新学生的成绩，应该去选课表中更新score
-      var newscore;
-      this.$prompt('请输入此学生的新的成绩', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputPattern:/^\d{0,2}$/,
-        inputErrorMessage: '成绩格式不正确'
-      }).then(({ value }) => {
-        console.log("修改后的成绩为：");
-        console.log(value);
-        newscore=value;
-        this.$axios({//传给后端sno, cno, newscore, 后端在选课表中更新
-          method:'post',
-          url:'http://150.158.171.212:8080/updateadminscore',//这里需要修改接口
-          data:{	//按照对象的格式去组织data，key-value形式
-            "sno":this.tableData[index].sno.toString(),
-            "cno":this.tableData[index].cno.toString(),
-            "score":newscore,
-          },
-        }).then(response => { //不需要返回任何信息
-          console.log(response.data);
-        })
 
-        this.$message({
-          type: 'success',
-          message: '新的成绩: ' + value,
-        });
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '取消输入'
-        });
-      });
+      console.log(index)
+      this.indexNum = index
+      this.form = this.tableData[index]
+      // var newscore;
+      // this.$prompt('请输入此学生的新的成绩', '提示', {
+      //   confirmButtonText: '确定',
+      //   cancelButtonText: '取消',
+      //   inputPattern:/^\d{0,2}$/,
+      //   inputErrorMessage: '成绩格式不正确'
+      // }).then(({ value }) => {
+      //   console.log("修改后的成绩为：");
+      //   console.log(value);
+      //   newscore=value;
+      //   this.$axios({//传给后端sno, cno, newscore, 后端在选课表中更新
+      //     method:'post',
+      //     url:'http://150.158.171.212:8080/updateadminscore',//这里需要修改接口
+      //     data:{	//按照对象的格式去组织data，key-value形式
+      //       "sno":this.tableData[index].sno.toString(),
+      //       "cno":this.tableData[index].cno.toString(),
+      //       "score":newscore,
+      //     },
+      //   }).then(response => { //不需要返回任何信息
+      //     console.log(response.data);
+      //   })
+
+      //   this.$message({
+      //     type: 'success',
+      //     message: '新的成绩: ' + value,
+      //   });
+      // }).catch(() => {
+      //   this.$message({
+      //     type: 'info',
+      //     message: '取消输入'
+      //   });
+      // });
     },
-    querySC(){//输入学号和课程号 ,可查询出对应的学生信息
-      this.$axios({
-        method:'get',
-        url:'http://150.158.171.212:8080/getadminscore?sno=' + this.formInline.sno+"&cno="+this.formInline.cno,
-      }).then(response => { //返回tno, tname, title,hireDate,root
-        console.log(response.data) //在控制台中打印其data部分内容
-        var res = response.data;//tno, tname, title,hireDate,root
-        if (res != null){
-          this.tableData = res;
-          this.$message('查询学生选课信息成功！');
-        }
-        else{
-          this.$alert('查询此学生选修此课程的相应信息失败', {
-            confirmButtonText: '确定',
-            callback: action => {
-              this.$message({
-                type: 'info',
-                message: `action: ${action}`
-              });
-            }
-          })
-        }
-      })
-    },
-    addSC(){//添加学生选了具体某门课的信息，在选课表中insert即可
-      this.$axios({//输入sno cno tno
-        method:'post',
-        url:'http://150.158.171.212:8080/addadminscore',
-        data:{
-          "sno": this.formInline.sno,
-          "cno": this.formInline.cno,
-          "tno": this.formInline.tno
+    updateStu() {
+      this.dialogFormVisible = false
+      console.log(this.indexNum)
+      console.log(1111111)
+
+      this.$axios({//输入sno sname ssex inyear pass major
+        method: 'post',
+        url: 'http://150.158.171.212:8080/updatestu',
+        data: {
+          "sno": this.form.sno.toString(),
+          "sname": this.form.sname,
+          "sex": this.form.sex,
+          "inyear": this.form.inyear.toString(),
+          "major": this.form.major,
+          "tel": this.form.telphone,
+          "pass": this.tableData[this.indexNum].pass,
         }
       }).then(response => { //不用返回任何信息，
         console.log(response.data) //在控制台中打印其data部分内容
         if (response.data == 1) {
-          this.$message('添加学生选课信息成功！');
+          this.$message('修改学生信息成功！');
         } else {
-          this.$message('添加学生选课信息失败！');
+          this.$message('修改学生信息失败！');
         }
       })
     },

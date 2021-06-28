@@ -76,11 +76,18 @@
                       }else if(res.privilege=='t'){
                         this.$router.push("/teainfo");
                       }else{
-                        this.$router.push("/admin");
+                        this.$router.push("/teainfo");
                       }
                         this.Common.userName = res.name;
                         this.Common.userId = this.form.username;
                         this.Common.privilege = res.privilege;
+                        if (res.privilege === 's') {
+                            this.Common.navlist = this.Common.l1
+                        }
+                        else if (res.privilege === 't')
+                            this.Common.navlist = this.Common.l2
+                        else if (res.privilege === 'a')
+                            this.Common.navlist = this.Common.l3
                         console.log(this.Common.privilege)
                     }
                     else{
