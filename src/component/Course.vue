@@ -39,6 +39,9 @@
         <el-form-item label="课程名程：">
           <el-input v-model="formInline.cname" ></el-input>
         </el-form-item>
+        <el-form-item label="学分：">
+          <el-input v-model="formInline.credit" ></el-input>
+        </el-form-item>
         <el-form-item label="开课院系：">
           <el-input v-model="formInline.academy" ></el-input>
         </el-form-item>
@@ -78,6 +81,12 @@
         <el-table-column
             prop="academy"
             label="开课院系"
+            header-align="center"
+            width="150">
+        </el-table-column>
+        <el-table-column
+            prop="tno"
+            label="教工号"
             header-align="center"
             width="150">
         </el-table-column>
@@ -147,30 +156,35 @@ export default {
         cno:'01',
         cname: '操作系统',
         academy: '信息学院',
+        tno:'9003',
         tname: '郑伟',
         term:'大三下'
       }, {
         cno:'03',
         cname: '计算机网络',
         academy: '信息学院',
+        tno:'9003',
         tname: '林子雨',
         term:'大三上'
       }, {
         cno:'10',
         cname: '电子电力技术',
         academy: '信息学院',
+        tno:'9003',
         tname: '严为民',
         term:'大二上'
       },  {
         cno:'98',
         cname: '编译原理',
         academy: '信息学院',
+        tno:'9003',
         tname: '林子雨',
         term:'大三下'
       }, {
         cno:'12',
         cname: '计网',
         academy: '信息学院',
+        tno:'9003',
         tname: '吴素珍',
         term:'大二上'
       }],
@@ -181,6 +195,7 @@ export default {
       formInline: {
         cno: '',
         cname: '',
+        credit:'',
         academy:'',
         tno:'',
         term:''
@@ -257,6 +272,7 @@ export default {
           url:'http://150.158.171.212:8080/updateteacher',//这里需要修改接口
           data:{	//按照对象的格式去组织data，key-value形式
             "cno":this.tableData[index].cno.toString(),
+            "oldtno":this.tableData[index].tno.toString(),
             "tno":newteacher,
           },
         }).then(response => { //这里的response是通过get方法请求得到的内容
@@ -278,7 +294,7 @@ export default {
         method:'get',
         url:'http://150.158.171.212:8080/gettea?cno=' + this.formInline.cno+
             '&tno='+this.formInline.tno+'&cname='+this.formInline.cname+'&academy'
-            +this.formInline.academy+'&term='+this.formInline.term,
+            +this.formInline.academy+'&term='+this.formInline.term+'&credit='+this.formInline.credit,
       }).then(response => { //不用返回任何信息，
         console.log(response.data) //在控制台中打印其data部分内容
         if (response.data == 1) {
