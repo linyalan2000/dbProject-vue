@@ -30,19 +30,19 @@
     <el-row>
       <el-form :inline="true" :model="formInline" class="select-form">
         <el-form-item label="学号：">
-          <el-input v-model="formInline.sno" style="width:140px"></el-input>
+          <el-input v-model="formInline.sno" style="width:140px" size="small"></el-input>
         </el-form-item>
         <el-form-item label="课程号：" >
-          <el-input v-model="formInline.cno" style="width:140px"></el-input>
+          <el-input v-model="formInline.cno" style="width:140px" size="small"></el-input>
         </el-form-item>
         <el-form-item label="授课教师(编号)：">
-          <el-input v-model="formInline.tno" style="width:140px"></el-input>
+          <el-input v-model="formInline.tno" style="width:140px" size="small"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="querySC">查询</el-button>
+          <el-button type="primary" @click="querySC" size="small">查询</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="addSC">添加学生选课信息</el-button>
+          <el-button type="primary" @click="addSC" size="small">添加学生选课信息</el-button>
         </el-form-item>
 <!--        <el-form-item>-->
 <!--          <el-button type="primary" @click="batchDelete">批量删除</el-button>-->
@@ -59,30 +59,38 @@
           <el-button slot="reference">批量删除</el-button>
         </el-popover>
       </el-form>
+      <el-form>
+        <el-form-item>
+         -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        </el-form-item>
+      </el-form>
       <el-form :inline="true" :model="formInline1" class="select-form">
         <el-form-item label="学号：">
-          <el-input v-model="formInline1.sno" style="width:100px"></el-input>
+          <el-input v-model="formInline1.sno" style="width:100px" size="small"></el-input>
         </el-form-item>
         <el-form-item label="姓名：" >
-          <el-input v-model="formInline1.sname" style="width:100px"></el-input>
+          <el-input v-model="formInline1.sname" style="width:100px" size="small"></el-input>
         </el-form-item>
         <el-form-item label="性别：">
-          <el-input v-model="formInline1.ssex" style="width:50px"></el-input>
+          <el-input v-model="formInline1.ssex" style="width:50px" size="small"></el-input>
         </el-form-item>
         <el-form-item label="专业：">
-          <el-input v-model="formInline1.major" style="width:90px"></el-input>
+          <el-input v-model="formInline1.major" style="width:90px" size="small"></el-input>
         </el-form-item>
         <el-form-item label="入学时间：">
-          <el-input v-model="formInline1.inyear" style="width:90px"></el-input>
+          <el-input v-model="formInline1.inyear" style="width:90px" size="small"></el-input>
         </el-form-item>
         <el-form-item label="初始密码：">
-          <el-input v-model="formInline1.pass" style="width:90px" type="password"></el-input>
+          <el-input v-model="formInline1.pass" style="width:90px" type="password" size="small"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="addStudent">添加新学生</el-button>
+          <el-form-item label="联系方式：">
+            <el-input v-model="formInline1.tel" style="width:90px" size="small"></el-input>
+          </el-form-item>
+          <el-button type="primary" @click="addStudent" size="small">添加新学生</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="deleteStudent">删除</el-button>
+          <el-button type="primary" @click="deleteStudent" size="small">删除</el-button>
         </el-form-item>
       </el-form>
       <el-row class="span-row"></el-row>
@@ -220,6 +228,7 @@ export default {
         ssex:'',
         inyear:'',
         pass:'123456',
+        tel:'',
         major:''
       },
       multipleSelection:0
@@ -271,7 +280,8 @@ export default {
           "ssex": this.formInline1.ssex,
           "inyear":this.formInline1.inyear,
           "pass":this.formInline1.pass,
-          "major":this.formInline1.major
+          "major":this.formInline1.major,
+          "tel":this.formInline1.tel
         }
       }).then(response => { //不用返回任何信息，
         console.log(response.data) //在控制台中打印其data部分内容
