@@ -205,16 +205,19 @@ export default {
     }
   },
   mounted(){//加载所有的课程信息
-    this.$axios({
-      method:'get',
-      url:'http://150.158.171.212:8080/getadmincourse?cno=&tno=',//这里要修改
-    }).then(response => { //sno sname cno  cname tname score term
-      console.log("加载所有课程信息（包括对应的老师）");
-      console.log(response.data);//需要返回的参数为cno cname academy tname maxnum term
-      this.tableData = response.data;//这里应该放出来
-    })
+    this.query()
   },
   methods: {
+    query(){
+      this.$axios({
+        method:'get',
+        url:'http://150.158.171.212:8080/getadmincourse?cno=&tno=',//这里要修改
+      }).then(response => { //sno sname cno  cname tname score term
+        console.log("加载所有课程信息（包括对应的老师）");
+        console.log(response.data);//需要返回的参数为cno cname academy tname maxnum term
+        this.tableData = response.data;//这里应该放出来
+      })
+    },
     logout(){
       console.log("logout!");
       this.$router.push("/login")
@@ -224,24 +227,28 @@ export default {
     },
     deleteRow(index, rows) {//从授课表中删除记录？？？
       this.$axios({
-        method:'get',
-        url:'http://150.158.171.212:8080/getscore?tno=' + this.tableData[index].tno
-        +'&cno='+this.tableData[index].cno,//这里需要修改
+        method:'post',
+        url:'http://150.158.171.212:8080/deleteadmincourse',
+        data:{
+          "cno":this.tableData[index].cno.toString(),
+          "tno":this.tableData[index].tno.toString()
+        }
       }).then(response => { //这里的response是通过get方法请求得到的内容
         console.log(response.data);
       })
-      rows.splice(index, 1);
+      this.query()
     },
     queryCourse(){//查询课程信息
       this.$axios({
         method:'get',
-        url:'http://150.158.171.212:8080/getadminscore?cno=' + this.formInline.cno+"&tno="+this.formInline.tno,
+        url:'http://150.158.171.212:8080/getadmincourse?cno=' + this.formInline.cno+"&tno="+this.formInline.tno,
       }).then(response => {
         console.log(response.data) //在控制台中打印其data部分内容
         var res = response.data;//返回cno cname academy tname term
         if (res != null){
           this.tableData = res
           this.$message('查询课程信息成功！');//这里好像有点问题
+          // this.query()
         }
         else{
           this.$alert('查询相应信息失败', {
@@ -267,20 +274,20 @@ export default {
         console.log("修改后的主讲教师为：");
         console.log(value);
         newteacher=value;
-        this.$axios({//后端在授课表中更新
+        this.$axios({//输入cno tno cname academy term
           method:'post',
-          url:'http://150.158.171.212:8080/updateteacher',//这里需要修改接口
-          data:{	//按照对象的格式去组织data，key-value形式
+          url:'http://150.158.171.212:8080/updateadmincourse',
+          data:{
             "cno":this.tableData[index].cno.toString(),
             "oldtno":this.tableData[index].tno.toString(),
-            "tno":newteacher,
+            "tno":newteacher
           },
-        }).then(response => { //这里的response是通过get方法请求得到的内容
-          console.log(response.data);
-        })
+        }).then(response => { //不用返回任何信息，
+          this.query()
         this.$message({
           type: 'success',
           message: '新的主讲教师编号: ' + value,
+
         });
       }).catch(() => {
         this.$message({
@@ -288,19 +295,43 @@ export default {
           message: '取消输入'
         });
       });
+    })
     },
     addCourse(){//添加
       this.$axios({//输入cno tno cname academy term
-        method:'get',
-        url:'http://150.158.171.212:8080/gettea?cno=' + this.formInline.cno+
-            '&tno='+this.formInline.tno+'&cname='+this.formInline.cname+'&academy'
-            +this.formInline.academy+'&term='+this.formInline.term+'&credit='+this.formInline.credit,
+        method:'post',
+        url:'http://150.158.171.212:8080/addadmincourse',
+        data:{
+          "cno": this.formInline.cno,
+          "tno":this.formInline.tno,
+          "cname":this.formInline.cname,
+          "acedamy":this.formInline.academy,
+          "credit":this.formInline.credit,
+          "term":this.formInline.term
+        },
       }).then(response => { //不用返回任何信息，
         console.log(response.data) //在控制台中打印其data部分内容
         if (response.data == 1) {
           this.$message('添加新的课程信息成功！');
+          this.formInline={
+            cno: '',
+            cname: '',
+            credit:'',
+            academy:'',
+            tno:'',
+            term:''
+          }
+          this.query()
         } else {
           this.$message('添加新的课程信息失败！');
+          this.formInline={
+            cno: '',
+            cname: '',
+            credit:'',
+            academy:'',
+            tno:'',
+            term:''
+          }
         }
       })
     },

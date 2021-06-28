@@ -54,7 +54,7 @@
           <p>确定删除这些记录内容吗？</p>
           <div style="text-align: right; margin: 0">
             <el-button size="mini" type="text" @click="visible = false">取消</el-button>
-            <el-button type="primary" size="mini" @click="batchDelete();visible = false" >确定</el-button>
+            <el-button type="primary" size="mini" @click="batchDelete()" visible = false" >确定</el-button>
           </div>
           <el-button slot="reference">批量删除</el-button>
         </el-popover>
@@ -200,6 +200,7 @@ export default {
       console.log("加载所有学生的所有选课记录");
       console.log(response.data);//需要返回的参数为sno sname cno  cname tname score term
       this.tableData = response.data;//这里应该放出来
+
     })
   },
   methods: {
@@ -302,9 +303,13 @@ export default {
     },
     addStudent(){//添加学生选了具体某门课的信息，在选课表中insert即可
       this.$axios({//输入sno cno tno
-        method:'get',
-        url:'http://150.158.171.212:8080/gettea?sno=' + this.formInline.sno+
-            '&cno='+this.formInline.cno+'&tno='+this.formInline.tno,
+        method:'post',
+        url:'http://150.158.171.212:8080/addadminscore',
+        data:{
+          "sno": this.formInline.sno,
+          "cno": this.formInline.cno,
+          "tno": this.formInline.tno
+        }
       }).then(response => { //不用返回任何信息，
         console.log(response.data) //在控制台中打印其data部分内容
         if (response.data == 1) {
