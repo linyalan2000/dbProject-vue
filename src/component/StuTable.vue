@@ -54,7 +54,7 @@
           <p>确定删除这些记录内容吗？</p>
           <div style="text-align: right; margin: 0">
             <el-button size="mini" type="text" @click="visible = false">取消</el-button>
-            <el-button type="primary" size="mini" @click="batchDelete()" visible = false" >确定</el-button>
+            <el-button type="primary" size="mini" @click="batchDelete();visible = false" >确定</el-button>
           </div>
           <el-button slot="reference">批量删除</el-button>
         </el-popover>
@@ -233,18 +233,22 @@ export default {
       console.log(key, keyPath);
     },
     batchDelete(){
-      this.$axios({//向后端传数据：cno,sno,tno
-        method:'post',
-        url:'http://150.158.171.212:8080/deleteadminscore',
-        data:{
-          "sno":this.formInline.sno.toString(),
-          "cno":this.formInline.cno.toString()
-        }
-      }).then(response => { //这里的response是通过get方法请求得到的内容
-        console.log(response.data);
-        this.formInline.sno ='';
-        this.formInline.cno ='';
-      })
+      for (let i in this.multipleSelection){
+        console.log(this.multipleSelection[i])
+        this.$axios({//向后端传数据：cno,sno,tno
+          method:'post',
+          url:'http://150.158.171.212:8080/deleteadminscore',
+          data:{
+            "sno":this.multipleSelection[i].sno.toString(),
+            "cno":this.multipleSelection[i].cno.toString()
+          }
+        }).then(response => { //这里的response是通过get方法请求得到的内容
+          console.log(response.data);
+          this.formInline.sno ='';
+          this.formInline.cno ='';
+        })
+      }
+
 
 
     },
