@@ -214,6 +214,17 @@ export default {
     })
   },
   methods: {
+    query(){
+      this.$axios({
+        method:'get',
+        url:'http://150.158.171.212:8080/getadminscore?cno=&sno=',//这里要修改
+      }).then(response => { //sno sname cno  cname tname score term
+        console.log("加载所有学生的所有选课记录");
+        console.log(response.data);//需要返回的参数为sno sname cno  cname tname score term
+        this.tableData = response.data;//这里应该放出来
+
+      })
+    },
     logout(){
       console.log("logout!");
       this.$router.push("/login")
@@ -252,7 +263,9 @@ export default {
         }
       }).then(response => { //不用返回任何信息，
         console.log(response.data) //在控制台中打印其data部分内容
+        this.formInline1
         if (response.data == 1) {
+
           this.$message('添加学生信息成功！');
         } else {
           this.$message('添加学生信息失败！');

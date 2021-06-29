@@ -253,8 +253,11 @@ export default {
     },
     deleteRow(index, rows) {//删除教师的信息,从教师表和选课表中删除该教师相关的基本信息
       this.$axios({
-        method:'get',
-        url:'http://150.158.171.212:8080/getscore?tno=' + this.tableData[index].tno,//这里需要修改
+        method:'post',
+        url:'http://150.158.171.212:8080/delteacher',
+        data:{
+          "tno": this.tableData[index].tno.toString()
+        }
       }).then(response => { //这里的response是通过get方法请求得到的内容
         console.log(response.data);
       })
