@@ -149,7 +149,7 @@ export default {
     console.log("接下来输出此教师的相关课程有哪些：");
     this.$axios({
       method:'get',
-      url:'http://150.158.171.212:8080/courseinfo?id=' + this.Common.userId,
+      url:'http://150.158.171.212:8080/courseinfo?cno=&id=' + this.Common.userId,
 
     }).then(response => { //这里的response是通过get方法请求得到的内容
       console.log(response.data) //在控制台中打印其data部分内容
@@ -184,7 +184,7 @@ export default {
     queryCourse(){
       this.$axios({
         method:'get',
-        url:'http://150.158.171.212:8080/quirecourse?cno=' + this.formInline.cid,
+        url:'http://150.158.171.212:8080/courseinfo?id=' + this.Common.userId + '&cno=' + this.formInline.cid
       }).then(response => { //这里的response是通过get方法请求得到的内容
         console.log(response.data) //在控制台中打印其data部分内容
         var res = response.data;//课程号，课程名称，开课院系，主讲老师，学生人数
