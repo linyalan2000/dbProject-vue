@@ -181,9 +181,9 @@ export default {
         method:'post',
         url:'http://150.158.171.212:8080/updatescore',
         data:{	//按照对象的格式去组织data，key-value形式
-          "cno":this.Common.courseId,
-          "sno":this.formInline.sid,
-          "score":this.formInline.score,
+          "cno":this.Common.courseId.toString(),
+          "sno":this.formInline.sid.toString(),
+          "score":this.formInline.score.toString(),
         },
       }).then(response => { //这里的response是通过get方法请求得到的内容
         console.log("添加学生的成绩不需要返回任何信息");
@@ -245,9 +245,9 @@ export default {
           method:'post',
           url:'http://150.158.171.212:8080/updatescore',
           data:{	//按照对象的格式去组织data，key-value形式
-            "cno":this.Common.courseId,
-            "sno":this.tableData[index].sid,
-            "score":newscore
+            "cno":this.Common.courseId.toString(),
+            "sno":this.tableData[index].sid.toString(),
+            "score":newscore.toString()
           },
         }).then(response => { //这里的response是通过get方法请求得到的内容
           console.log(response.data);

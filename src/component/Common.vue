@@ -19,6 +19,7 @@
         ],
         l3:[
             {name:'/teainfo',navItem:'个人信息'},
+            {name:'/teacourse',navItem:'授课信息'},
             {name:'/course',navItem:'课程信息管理'},
             {name:'/allstutable',navItem:'学生信息管理'},
             {name:'/stutable',navItem:'学生成绩管理'},
