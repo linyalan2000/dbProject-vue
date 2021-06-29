@@ -88,6 +88,33 @@ export default {
 
     }
   },
+  mounted() {
+    this.$axios({//获取学生的个人信息
+      method:'get',
+      url:'http://150.158.171.212:8080/teainfo?id=' + this.Common.userId
+    }).then(response => { //这里的response是通过get方法请求得到的内容
+      console.log(response.data) //在控制台中打印其data部分内容
+      var res = response.data;
+      this.formInline.name = res.tname;
+      this.formInline.telephone=res.telphone;
+      this.formInline.DateOfCome=res.inyear;
+      this.formInline.id=res.tno;
+      this.formInline.sex=res.sex;
+      this.formInline.major=res.major;
+      this.formInline.graduateTime=res.leaveyear;
+      this.formInline.pass=res.pass;
+    }),
+            this.$axios({//获取已修总学分
+              method:'get',
+              url:'http://150.158.171.212:8080/getcredit?sno=' + this.Common.userId
+            }).then(response => { //这里的response是通过get方法请求得到的内容
+              console.log(1111)
+              console.log(response.data) //在控制台中打印其data部分内容
+
+              var res = response.data;
+              this.credit = res;
+            })
+  },
   methods: {
     logout(){
       console.log("logout!");
